@@ -1,0 +1,124 @@
+<div class="text-white">
+  <h1>Attendances History</h1>
+  </br>
+  <h4>Filter by:</h4>
+  <%= search_form_for @q, html: { class: "flex gap-2" } do |f| %>
+    <%= f.collection_select :user_id_eq, @employees, :id, :full_name, { include_blank: "Select Employee" }, { class: "text-black" } %>
+  
+    <select id="timeSelect" name="time_select" class="text-black">
+      <option value="default" <%= 'selected' if params[:time_select] == 'default' %>>All Time</option>
+      <option value="today" <%= 'selected' if params[:time_select] == 'today' %>>Today</option>
+      <option value="yesterday" <%= 'selected' if params[:time_select] == 'yesterday' %>>Yesterday</option>
+      <option value="last7days" <%= 'selected' if params[:time_select] == 'last7days' %>>Last Week</option>
+      <option value="last30days" <%= 'selected' if params[:time_select] == 'last30days' %>>Last Month</option>
+      <option value="custom" <%= 'selected' if params[:time_select] == 'custom' %>>Custom Range</option>
+    </select>
+
+    <%= f.date_field :clock_in_gteq, class: "text-black", type: "hidden" %>
+    <%= f.date_field :clock_in_lteq, class: "text-black", type: "hidden" %>
+
+
+    <%= select_tag "q[status_eq]", options_for_select([['All Status', '']] + Attendance.statuses.map { |k, v| [k.humanize, v] }), { class: "text-black" } %>
+
+    <%= link_to "Reset", attendances_path, class: "btn btn-outline" %>
+    <%= f.submit id: "searchBtn", class: "btn btn-primary" %>
+    <%= link_to "Download", attendances_path(format: :pdf, q: @search_params.present? ? @search_params : {}), class: "w-fit btn btn-primary", target: "_blank" %>
+  <% end %>
+  </br>
+  <table class="w-full">
+    <thead>
+      <tr>
+        <th class="text-left px-2">User</th>
+        <th><%= sort_link(@q, :clock_in, "Clock In") %></th>
+        <th class="text-left px-2">Clock Out</th>
+        <th class="text-left px-2">Status</th>
+        <th class="text-left px-2">Details</th>
+        <th class="text-left px-2" colspan="2">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% if @attendances.any? %>
+        <% @attendances.each do |attendance| %>
+          <tr>
+            <td class="px-2"><%= attendance.user.full_name %></td>
+            <td class="px-2"><%= attendance.clock_in.strftime("%a, %d %b %Y - %H:%M WIB") %></td>
+            <td class="px-2"><%= attendance.clock_out %></td>
+            <td class="px-2"><%= attendance.status %></td>
+            <td class="px-2"><%= attendance.details %></td>
+            <td class="px-2"><%= link_to "View", attendance_path(attendance), class: "text-primary-300" %></td>
+            <td class="px-2"><%= link_to "Download", attendance_path(attendance, format: :pdf), class: "text-primary-300" %></td>
+          </tr>
+        <% end %>
+      <% else %>
+        <tr>
+          <td colspan="6" class="text-center">No data found.</td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  </br>
+  <%== pagy_nav(@pagy) %>
+  </br>
+  <%= link_to "<- Back to Home", root_path %>
+</div>
+
+<!-- CHECKING SELECT "TIME" TYPE -->
+<script>
+  document.addEventListener('turbo:load', function() {
+    const timeSelect = document.getElementById('timeSelect');
+    const dateGteq = document.getElementById('q_clock_in_gteq');
+    const dateLteq = document.getElementById('q_clock_in_lteq');
+
+    if (timeSelect.value == 'custom') {
+      dateGteq.type = "date";
+      dateLteq.type = "date";
+    }
+  });
+</script>
+
+<!-- UPDATE DATE FIELD VALUE -->
+<script>
+  document.getElementById('timeSelect').addEventListener('change', function() {
+    const dateGteq = document.getElementById('q_clock_in_gteq');
+    const dateLteq = document.getElementById('q_clock_in_lteq');
+
+    switch (this.value) {
+      case 'today':
+        dateGteq.value = "<%= Date.today %>"
+        dateLteq.value = "<%= Date.today %>"
+        dateGteq.type = "hidden";
+        dateLteq.type = "hidden";
+        break;
+      case 'yesterday':
+        dateGteq.value = "<%= Date.yesterday %>"
+        dateLteq.value = "<%= Date.yesterday %>"
+        dateGteq.type = "hidden";
+        dateLteq.type = "hidden";
+        break;
+      case 'last7days':
+        dateGteq.value = "<%= (Date.today - 7) %>"
+        dateLteq.value = "<%= Date.today %>"
+        dateGteq.type = "hidden";
+        dateLteq.type = "hidden";
+        break;
+      case 'last30days':
+        dateGteq.value = "<%= (Date.today - 30) %>"
+        dateLteq.value = "<%= Date.today %>"
+        dateGteq.type = "hidden";
+        dateLteq.type = "hidden";
+        break;
+      case 'custom':
+        dateGteq.value = "";
+        dateLteq.value = "";
+        dateGteq.type = "date";
+        dateLteq.type = "date";
+        break;
+      default:
+        dateGteq.value = "";
+        dateLteq.value = "";
+        dateGteq.type = "hidden";
+        dateLteq.type = "hidden";
+        break;
+    }
+  });
+</script>

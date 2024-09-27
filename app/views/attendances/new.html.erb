@@ -1,0 +1,159 @@
+<div class="container h-svh md:h-screen flex flex-col justify-center items-center p-4">
+  <% if current_user %>
+    <div class="menu-bar w-full flex justify-between mb-10">
+      <button class="menu-bar__sidebar-trigger btn-circle btn-outline" onclick="toggleSidebar()" role="button">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
+          <path fill-rule="evenodd" d="M3 6.75A.75.75 0 0 1 3.75 6h16.5a.75.75 0 0 1 0 1.5H3.75A.75.75 0 0 1 3 6.75ZM3 12a.75.75 0 0 1 .75-.75h16.5a.75.75 0 0 1 0 1.5H3.75A.75.75 0 0 1 3 12Zm0 5.25a.75.75 0 0 1 .75-.75h16.5a.75.75 0 0 1 0 1.5H3.75a.75.75 0 0 1-.75-.75Z" clip-rule="evenodd" />
+        </svg>        
+      </button>
+      <%= link_to user_session_path(current_user), data: { turbo_method: :delete, turbo_confirm: 'Are you sure to sign out?' }, class: "menu-bar__attendance-history btn-circle btn-outline hover:bg-danger-300 hover:border-danger-300 hover:text-grayscale-100", title: "Sign Out" do %>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
+          <path fill-rule="evenodd" d="M5.47 5.47a.75.75 0 0 1 1.06 0L12 10.94l5.47-5.47a.75.75 0 1 1 1.06 1.06L13.06 12l5.47 5.47a.75.75 0 1 1-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 0 1-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+        </svg>        
+      <% end %>
+    </div>
+  <% else %>
+    <h3 class="greeting heading-3 text-grayscale-100 mb-10">Welcome to AbsensiApp!</h3>
+  <% end %>
+  <%= render 'shared/liveclock' %>
+  <% if current_user %>
+    <!-- DEFAULT -->
+    <div class="homepage__cta-group mt-4">
+      <button id="btn-start-selfie" class="btn btn-primary mb-4">CLOCK IN</button>
+      <%= link_to "I can't work today", new_permission_attendances_path, id: "link-create-permission", class: "text-body text-grayscale-100/75 hover:text-grayscale-100" %>
+    </div>
+    <!-- TAKE A SELFIE -->
+    <div id="take-selfie__container" class="hidden w-full flex flex-col items-center gap-4">
+      <h4 class="take-selfie__heading heading-4 text-grayscale-100">Take a Selfie</h4>
+      <video id="take-selfie__live-preview" width="960" height="1280" autoplay class="w-full max-w-md aspect-[3/4] rounded-lg object-cover"></video>
+      <div class="take-selfie__cta-group flex items-center gap-4 pr-14">
+        <button id="btn-cancel-selfie" class="btn-circle btn-outline">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
+            <path fill-rule="evenodd" d="M11.03 3.97a.75.75 0 0 1 0 1.06l-6.22 6.22H21a.75.75 0 0 1 0 1.5H4.81l6.22 6.22a.75.75 0 1 1-1.06 1.06l-7.5-7.5a.75.75 0 0 1 0-1.06l7.5-7.5a.75.75 0 0 1 1.06 0Z" clip-rule="evenodd" />
+          </svg>                
+        </button>
+        <button id="btn-take-selfie" class="btn-circle btn-primary p-4">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-8">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0ZM18.75 10.5h.008v.008h-.008V10.5Z" />
+          </svg>    
+        </button>
+      </div>
+    </div>
+    <!-- PREVIEW THE SELFIE -->
+    <div id="preview-selfie__container" class="hidden w-full flex flex-col items-center gap-4">
+      <h4 class="preview-selfie__heading heading-4 text-grayscale-100">Preview the Selfie</h4>
+      <canvas id="preview-selfie__box" width="960" height="1280" class="w-full h-auto max-w-md aspect-[3/4] rounded-lg object-cover"></canvas>
+      <div class="preview-selfie__cta-group flex items-center gap-4 pl-14">
+        <%= form_with(model: @attendance, url: attendances_path(context: 'clock_in_time')) do |f| %>
+          <%= f.text_field :selfie_url, type: "hidden" %>
+          <%= f.text_field :latitude, type: "hidden" %>
+          <%= f.text_field :longitude, type: "hidden" %>
+          <%= button_tag(type: "submit", class: "btn-circle btn-primary p-4") do %>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-8">
+              <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clip-rule="evenodd" />
+            </svg>
+          <% end %>
+        <% end %>
+        <button id="btn-retake-selfie" class="btn-circle btn-outline">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0ZM18.75 10.5h.008v.008h-.008V10.5Z" />
+          </svg>               
+        </button>
+      </div>
+    </div>
+  <% else %>
+    <%= link_to "SIGN IN", sign_in_path, class: "btn btn-primary mt-6" %>
+    <p class="text-body text-grayscale-100/75 mt-4">Don't have an account? <%= link_to "Register Now.", sign_up_path, class: "text-bold text-primary-300 hover:underline" %></p>
+  <% end %>
+</div>
+
+<script>
+  document.addEventListener("turbo:load", (event) => {
+    let btn_start_selfie = document.getElementById("btn-start-selfie");
+    let btn_cancel_selfie = document.getElementById("btn-cancel-selfie");
+    let btn_take_selfie = document.getElementById("btn-take-selfie");
+    let btn_retake_selfie = document.getElementById("btn-retake-selfie");
+    let take_selfie_container = document.getElementById("take-selfie__container");
+    let preview_selfie_container = document.getElementById("preview-selfie__container");
+    let selfie_live_preview = document.getElementById("take-selfie__live-preview");
+    let menu_bar = document.querySelector(".menu-bar");
+    let homepage_cta_group = document.querySelector(".homepage__cta-group");
+    let liveclock = document.querySelector(".liveclock__container");
+    let selfie_preview = document.getElementById("preview-selfie__box");
+
+    // start selfie & get location coordinates
+    btn_start_selfie.addEventListener('click', async function() {
+      let stream = null;
+
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+      }
+      catch(error) {
+        alert(error.message);
+        return;
+      }
+
+      selfie_live_preview.srcObject = stream;
+
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(storeCoordinates);
+      } else { 
+        alert("Geolocation is not supported by this browser.");
+      }
+
+      menu_bar.classList.toggle("hidden");
+      homepage_cta_group.classList.toggle("hidden");
+      liveclock.classList.toggle("hidden");
+      take_selfie_container.classList.toggle("hidden");
+    });
+    // cancel selfie
+    btn_cancel_selfie.addEventListener('click', function() {
+      window.location.reload();
+    });
+    // take selfie
+    btn_take_selfie.addEventListener('click', function() {
+      const videoWidth = selfie_live_preview.videoWidth;
+      const videoHeight = selfie_live_preview.videoHeight;
+
+      selfie_preview.width = videoWidth;
+      selfie_preview.height = videoHeight;
+
+      selfie_preview.getContext('2d').drawImage(selfie_live_preview, 0, 0, videoWidth, videoHeight);
+      let image_data_url = selfie_preview.toDataURL('image/jpeg');
+
+      document.querySelector("#attendance_selfie_url").value = image_data_url;
+
+      const stream = selfie_live_preview.srcObject;
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+      }
+
+      take_selfie_container.classList.toggle("hidden");
+      preview_selfie_container.classList.toggle("hidden");
+    });
+    // restart selfie
+    btn_retake_selfie.addEventListener('click', async function() {
+      let stream = null;
+
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+      }
+      catch(error) {
+        alert(error.message);
+        return;
+      }
+
+      selfie_live_preview.srcObject = stream;
+
+      take_selfie_container.classList.toggle("hidden");
+      preview_selfie_container.classList.toggle("hidden");
+    });
+    // store location coordinates to attendance
+    function storeCoordinates(position) {
+      document.querySelector("#attendance_latitude").value = position.coords.latitude;
+      document.querySelector("#attendance_longitude").value = position.coords.longitude;
+    }
+  });
+</script>

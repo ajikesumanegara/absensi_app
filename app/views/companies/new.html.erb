@@ -1,0 +1,27 @@
+<div class="container h-svh md:h-screen flex flex-col justify-center p-4">
+  <div class="main-content max-w-sm mx-auto mb-20">
+    <h4 class="main-content__heading heading-2 text-grayscale-100 mb-2">Create a Company</h4>
+    <p class="main-content__subheading text-body text-grayscale-100 mb-4">Please fill in this form to create a new company.</p>
+    <%= form_with model: @company do |f| %>
+      <% if @company.errors.any? %>
+        <div class="flash flash-danger mb-4">
+          <h5 class="flash__instruction text-bold text-danger-300 mb-1">
+            Please correct the following errors:
+          </h5>
+          <ul class="flash__list-errors list-disc pl-4">
+            <% @company.errors.full_messages.each do |message| %>
+              <li class="flash__error-item text-small text-grayscale-100"><%= message %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+      <div class="main-content__form-container space-y-4 mb-6">
+        <div class="form-control">
+          <%= render partial: 'shared/form/label', locals: { for_name: "name", placeholder: "Company Name" } %>
+          <%= f.text_field :name, class: "input-field", placeholder: "Enter your company name" %>
+        </div>
+      </div>
+      <%= f.submit "CREATE", class: "btn btn-primary" %>
+    <% end %>
+  </div>
+</div>

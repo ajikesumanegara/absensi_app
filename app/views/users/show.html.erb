@@ -1,0 +1,7 @@
+<h1 class="heading-4 text-grayscale-100 mb-4">Hello <%= @user.full_name %>!</h1>
+
+<ul class="text-grayscale-100">
+  <% @user.attendances.each do |attendance| %>
+    <li>Clock In: <%= attendance.clock_in %> | Clock Out: <%= attendance.clock_out %> | Status: <%= attendance.status %> | Details: <%= attendance.details %></li>
+  <% end %>
+</ul>

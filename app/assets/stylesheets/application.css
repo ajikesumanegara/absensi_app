@@ -13,3 +13,28 @@
  *= require_tree .
  *= require_self
  */
+
+.flash-primary {
+border: 1px solid #2563eb;
+background-image: linear-gradient(to right, rgba(37, 99, 235, 0.2), rgba(37, 99, 235, 0));
+box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+}
+
+
+.flash-success {
+border: 1px solid #22c55e;
+background-image: linear-gradient(to right, rgba(34, 197, 94, 0.2), rgba(34, 197, 94, 0));
+box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.1);
+}
+
+.flash-danger {
+  border: 1px solid #ef4444;
+  background-image: linear-gradient(to right, rgba(239, 68, 68, 0.2), rgba(239, 68, 68, 0));
+  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1);
+}
+
+#preview-selfie__box {
+  aspect-ratio: attr(width) / attr(height);
+}
+
+    

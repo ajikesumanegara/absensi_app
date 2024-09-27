@@ -1,0 +1,26 @@
+<div class="text-white">
+  <h1>Companies List</h1>
+  </br>
+  <%= link_to "Create new company +", new_company_path, class: "text-grayscale-100" %>
+  </br></br>
+  <table class="w-full">
+    <thead>
+      <tr>
+        <th class="text-left">Company</th>
+        <th class="text-left">Owner</th>
+        <th class="text-left">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @companies.each do |company| %>
+        <tr>
+          <td><%= company.name %></td>
+          <td><%= company.users.first.name %></td>
+          <td><%= link_to "View", company_path(company.id), class: "text-primary-300" %></td>
+        </tr>
+        <% end %>
+    </tbody>
+  </table>
+  </br>
+  <%= link_to "<- Back to Home", root_path %>
+</div>

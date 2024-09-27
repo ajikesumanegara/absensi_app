@@ -1,0 +1,28 @@
+<h3 class="heading-3 text-grayscale-100"><%= @company.name %>'s Details</h3>
+</br>
+<h4 class="heading-4 text-grayscale-100">Company's Users:</h4>
+</br>
+<table class="w-full">
+  <thead>
+    <tr>
+      <th class="text-left text-grayscale-100">Name</th>
+      <th class="text-left text-grayscale-100" colspan="2">Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @company.users.each do |user| %>
+      <tr>
+        <td class="text-grayscale-100">
+          <%= user.full_name %>
+          <% if user.as_owner %>
+            (Owner)
+          <% end %>
+        </td>
+        <td><%= link_to "Show", user_path(user), class: "text-grayscale-100 underline" %></td>
+        <td><%= link_to "Delete", user_path(user), data: { turbo_method: :delete, turbo_confirm: 'Are you sure to delete this user?' }, class: "text-grayscale-100 underline" %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+</br>
+<%= link_to "Back to Home", root_path, class: "text-grayscale-100" %>

@@ -1,0 +1,26 @@
+<div class="container h-svh md:h-screen flex flex-col justify-center p-4">
+  <div class="menu-bar flex">
+    <%= link_to root_path, class: "menu-bar__previous-link btn-circle btn-outline mb-10" do %>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
+        <path fill-rule="evenodd" d="M11.03 3.97a.75.75 0 0 1 0 1.06l-6.22 6.22H21a.75.75 0 0 1 0 1.5H4.81l6.22 6.22a.75.75 0 1 1-1.06 1.06l-7.5-7.5a.75.75 0 0 1 0-1.06l7.5-7.5a.75.75 0 0 1 1.06 0Z" clip-rule="evenodd" />
+      </svg>  
+    <% end %>
+  </div>
+  <div class="main-content w-full max-w-xs md:max-w-sm mx-auto mb-20">
+    <h4 class="main-content__heading heading-2 text-grayscale-100 mb-2">Sign In</h4>
+    <p class="main-content__subheading text-body text-grayscale-100 mb-4">Please fill in this form to enter.</p>
+    <%= form_with model: @user, url: user_sessions_path do |f| %>
+      <div class="main-content__form-container space-y-4 mb-6">
+        <div class="form-control">
+          <%= render partial: 'shared/form/label', locals: { for_name: "username", placeholder: "Username" } %>
+          <%= f.text_field :username, class: "input-field", placeholder: "Enter your username" %>
+        </div>
+        <div class="form-control">
+          <%= render partial: 'shared/form/label', locals: { for_name: "user_password", placeholder: "Password" } %>
+          <%= render partial: 'shared/form/password_field', locals: { f: f, id: "user_password", name: "user[password]", placeholder: "Enter your password" } %>
+      </div>
+      <%= f.submit "SIGN IN", class: "btn btn-primary" %>
+      <p class="text-body text-grayscale-100/75 mt-4">Don't have an account? <%= link_to "Register Now.", sign_up_path, class: "text-bold text-primary-300 hover:underline" %></p>
+    <% end %>
+  </div>
+</div>

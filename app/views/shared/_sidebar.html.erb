@@ -1,0 +1,38 @@
+<aside class="sidebar fixed top-0 left-0 w-80 max-w-xs h-svh md:hscreen z-20 p-4 -translate-x-full transition-transform">
+  <div class="sidebar__box w-full h-full bg-grayscale-400/75 border-2 border-grayscale-300 rounded-lg">
+    <div class="sidebar__header flex justify-between items-center gap-4 p-4">
+      <%= link_to "AbsensiApp", root_path, class: "sidebar__brand-logo heading-4 text-white" %>
+      <button id="closeSidebar" class="btn-circle btn-outline" onclick="toggleSidebar()">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-6">
+          <path d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z" />
+        </svg>            
+      </button>
+    </div>
+    <ul class="sidebar__menu p-4 space-y-4">
+      <li>
+        <%= link_to "Attendances", attendances_path, class: "text-white underline" %>
+      </li>
+      <% if current_user.as_owner %>
+        <li>
+          <%= link_to "Users", users_path, class: "text-white underline" %>
+        </li>
+      <% end %>
+      <li>
+        <%= link_to "Profile Settings", edit_user_path(current_user), class: "text-white underline" %>
+      </li>
+    </ul>
+  </div>
+</aside>
+<div id="sidebarOverlay" class="hidden fixed top-0 left-0 w-full h-screen bg-grayscale-500/50 backdrop-blur-lg z-10"></div>
+
+<script>
+  function toggleSidebar() {
+    const sidebar = document.querySelector('.sidebar');
+    const closeSidebar = document.getElementById('closeSidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+
+    overlay.classList.toggle('hidden');
+    sidebar.classList.toggle('-translate-x-full');
+    sidebar.classList.toggle('translate-x-0');
+  }
+</script>

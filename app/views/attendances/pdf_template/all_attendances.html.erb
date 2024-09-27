@@ -1,0 +1,38 @@
+<title>All Attendances Report</title>
+
+<style>
+  table {
+    width: 100%;
+  }
+</style>
+
+<h1>All Attendances Report</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>User</th>
+      <th>Clock In</th>
+      <th>Clock Out</th>
+      <th>Status</th>
+      <th>Details</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% if @attendances.any? %>
+      <% @attendances.each do |attendance| %>
+        <tr>
+          <td><%= attendance.user.full_name %></td>
+          <td><%= attendance.clock_in %></td>
+          <td><%= attendance.clock_out %></td>
+          <td><%= attendance.status %></td>
+          <td><%= attendance.details %></td>
+        </tr>
+      <% end %>
+    <% else %>
+      <tr>
+        <td colspan="6">No data found.</td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

@@ -1,0 +1,27 @@
+<h1 class="text-grayscale-100">Users Listing</h1>
+</br>
+<%= link_to 'Add New User', new_invitation_path, class: "btn btn-primary w-fit" %>
+</br>
+<table class="w-full text-grayscale-100">
+  <thead>
+    <tr>
+      <th class="text-left">ID</th>
+      <th class="text-left">Name</th>
+      <th class="text-left">Company Name</th>
+      <th class="text-left">Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @users.each do |user| %>
+      <tr>
+        <td><%= user.id %></td>
+        <td><%= user.full_name %></td>
+        <td><%= user.company.name %></td>
+        <td><%= link_to "View Profile", user_path(user), class: "underline" %></td>
+        <td><%= link_to "Delete", user_path(user), data: { turbo_method: :delete, turbo_confirm: 'Are you sure to delete this user?' }, class: "underline" %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+</br>
+<%= link_to "<- Back to Home", root_path, class: "text-grayscale-100" %>

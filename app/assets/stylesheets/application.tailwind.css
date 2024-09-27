@@ -1,13 +1,114 @@
+@import url('https://fonts.googleapis.com/css2?family=Gabarito:wght@400..900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/*
-
-@layer components {
-  .btn-primary {
-    @apply py-2 px-4 bg-blue-200;
+@layer base {
+  html {
+    font-family: 'Gabarito', sans-serif;
   }
 }
 
-*/
+@layer components {
+  .heading-1 {
+    @apply text-6xl md:text-7xl font-semibold;
+  }
+
+  .heading-2 {
+    @apply text-4xl md:text-5xl font-semibold;
+  }
+
+  .heading-3 {
+    @apply text-3xl md:text-4xl font-semibold leading-none;
+  }
+
+  .heading-4 {
+    @apply text-xl md:text-2xl font-semibold leading-tight;
+  }
+
+  .text-body {
+    @apply text-base md:text-lg;
+  }
+
+  .text-bold {
+    @apply text-base md:text-lg font-semibold;
+  }
+
+  .text-small {
+    @apply text-sm;
+  }
+
+  .btn {
+    @apply flex items-center gap-2 px-6 py-3 text-base md:text-lg rounded-full cursor-pointer;
+  }
+
+  .btn-circle {
+    @apply flex justify-center items-center p-2 rounded-full cursor-pointer;
+  }
+
+  .btn-primary {
+    @apply bg-primary-300 font-semibold text-grayscale-100 hover:bg-primary-400;
+  }
+
+  .btn-danger {
+    @apply bg-danger-400 font-semibold text-grayscale-100 hover:bg-danger-500;
+  }
+
+  .btn-outline {
+    @apply border border-grayscale-100/75 text-grayscale-100/75 hover:bg-grayscale-100 hover:text-grayscale-500;
+  }
+
+  .form-control {
+    @apply space-y-2;
+  }
+
+  .input-field, .password-field, .textarea {
+    @apply w-full bg-grayscale-400 border border-grayscale-300 text-lg text-grayscale-100 rounded-lg focus:border-2 focus:border-primary-300 focus:ring-4 focus:ring-primary-300/20 placeholder:text-grayscale-200;
+  }
+
+  .radio {
+    @apply appearance-none w-6 h-6 bg-grayscale-400 border border-grayscale-300 checked:bg-primary-300;
+  }
+
+  .flash {
+    @apply w-[calc(100%-1rem)] max-w-sm xl:max-w-xl min-h-16 px-3 py-2 md:px-4 md:py-3 rounded-lg border shadow-xl;
+  }
+
+  .flash-primary {
+    @apply border-primary-300 bg-gradient-to-r from-primary-300/20 to-primary-300/0 ring-4 ring-primary-300/20;
+  }
+
+  .flash-danger {
+    @apply border-danger-300 bg-gradient-to-r from-danger-300/20 to-danger-300/0 ring-4 ring-danger-300/20;
+  }
+}
+
+/* CUSTOM STYLE FOR PAGINATION */
+
+.pagy {
+  @apply flex space-x-1 font-semibold text-sm text-grayscale-100;
+}
+
+.pagy a {
+  @apply flex justify-center items-center rounded-full w-8 h-8 border border-grayscale-100/50 hover:bg-grayscale-100 hover:text-grayscale-500;
+}
+
+.pagy a:not([href]) {
+  @apply opacity-25 cursor-default hover:bg-transparent hover:text-grayscale-100;
+}
+
+.pagy a.current {
+  @apply opacity-100 text-grayscale-500 bg-grayscale-100 hover:bg-grayscale-100 hover:text-grayscale-500;
+}
+
+.pagy label {
+  @apply inline-block whitespace-nowrap bg-gray-200 rounded-lg px-3 py-0.5;
+}
+
+.pagy label input {
+  @apply bg-gray-100 border-none rounded-md;
+}
+
+
+

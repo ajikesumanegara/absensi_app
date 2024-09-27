@@ -67,4 +67,9 @@ Rails.application.configure do
 
   # Uncomment if you wish to allow Action Cable access from any origin.
   # config.action_cable.disable_request_forgery_protection = true
+
+  # Setup ngrok for real-time preview
+  config.hosts << "7358-180-244-135-190.ngrok-free.app"
+
+  config.action_mailer.delivery_method = :smtp
 end
