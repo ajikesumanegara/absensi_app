@@ -1,12 +1,13 @@
 class InvitationMailer < ApplicationMailer
+  def invite_new_user
+    @user = params[:user]
+    @url  = "http://localhost:3000/accept_invitations/#{@user.invite_token}"
+    mail(to: @user.email, subject: "You are invited to join #{@user.company.name} as a Member")
+  end
 
-  # Subject can be set in your I18n file at config/locales/en.yml
-  # with the following lookup:
-  #
-  #   en.invitation_mailer.invite_new_user.subject
-  #
-  def invite_new_user(user)
-    @user = user
-    mail(to: @user.email, subject: 'Welcome to My Awesome Site')
+  def re_invite_new_user
+    @user = params[:user]
+    @url  = "http://localhost:3000/accept_invitations/#{@user.invite_token}"
+    mail(to: @user.email, subject: "New invitation to join #{@user.company.name}")
   end
 end

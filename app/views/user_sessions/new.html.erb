@@ -18,6 +18,7 @@
         <div class="form-control">
           <%= render partial: 'shared/form/label', locals: { for_name: "user_password", placeholder: "Password" } %>
           <%= render partial: 'shared/form/password_field', locals: { f: f, id: "user_password", name: "user[password]", placeholder: "Enter your password" } %>
+        </div>
       </div>
       <%= f.submit "SIGN IN", class: "btn btn-primary" %>
       <p class="text-body text-grayscale-100/75 mt-4">Don't have an account? <%= link_to "Register Now.", sign_up_path, class: "text-bold text-primary-300 hover:underline" %></p>

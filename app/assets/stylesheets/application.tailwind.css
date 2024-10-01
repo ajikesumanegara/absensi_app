@@ -67,6 +67,10 @@
     @apply w-full bg-grayscale-400 border border-grayscale-300 text-lg text-grayscale-100 rounded-lg focus:border-2 focus:border-primary-300 focus:ring-4 focus:ring-primary-300/20 placeholder:text-grayscale-200;
   }
 
+  .input-field:disabled {
+    @apply opacity-25;
+  }
+
   .radio {
     @apply appearance-none w-6 h-6 bg-grayscale-400 border border-grayscale-300 checked:bg-primary-300;
   }

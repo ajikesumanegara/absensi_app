@@ -6,4 +6,8 @@ class InvitationMailerPreview < ActionMailer::Preview
     InvitationMailer.invite_new_user
   end
 
+  def re_invite_new_user
+    InvitationMailer.re_invite_new_user
+  end
+
 end

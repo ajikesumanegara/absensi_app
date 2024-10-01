@@ -4,8 +4,8 @@
     <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
   </head>
   <body>
-    <h1>Welcome to example.com, <%= @user.full_name %></h1>
-    <p>You have been invited to join <%= @user.company.name %>. Please click the link below to activate your account and update your details:</p>
+    <h1>Hi, <%= @user.full_name %>!</h1>
+    <p>Your last invitation was expired. Please click the link below to activate your account and update your details:</p>
     <a href="<%= @url %>"><%= @url %></a></br>
     <p>Thanks for joining and have a great day!</p>
   </body>

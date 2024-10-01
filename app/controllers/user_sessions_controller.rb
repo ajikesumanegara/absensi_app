@@ -1,7 +1,12 @@
 class UserSessionsController < ApplicationController
 
   def new
-    @user = User.new
+    if current_user
+      flash[:primary] = "You are already signed in!"
+      redirect_to root_path
+    else
+      @user = User.new
+    end
   end
 
   def create
@@ -13,13 +18,13 @@ class UserSessionsController < ApplicationController
       redirect_to root_path
     else
       flash[:danger] = "Login failed! Please try again."
-      render :new
+      redirect_to sign_in_path
     end
   end
 
   def destroy
     session[:user_id] = nil
-    flash[:success] = "You have successfully logged out."
+    flash[:primary] = "You have successfully logged out."
     redirect_to root_path
   end
   

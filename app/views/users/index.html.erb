@@ -7,8 +7,7 @@
     <tr>
       <th class="text-left">ID</th>
       <th class="text-left">Name</th>
-      <th class="text-left">Company Name</th>
-      <th class="text-left">Action</th>
+      <th class="text-left" colspan="3">Action</th>
     </tr>
   </thead>
   <tbody>
@@ -16,9 +15,17 @@
       <tr>
         <td><%= user.id %></td>
         <td><%= user.full_name %></td>
-        <td><%= user.company.name %></td>
-        <td><%= link_to "View Profile", user_path(user), class: "underline" %></td>
-        <td><%= link_to "Delete", user_path(user), data: { turbo_method: :delete, turbo_confirm: 'Are you sure to delete this user?' }, class: "underline" %></td>
+        <% if user.invite_token_expired_at.present? %>
+          <% if DateTime.now > (user.invite_token_expired_at + 8.hours) %>
+            <td><%= link_to "Re-generate Token", invitation_path(user), data: { turbo_method: :patch, turbo_confirm: 'Are you sure regenerate token for this user?' }, class: "underline" %></td>
+          <% else %>
+            <td>Waiting Approvals</td>
+          <% end %>
+        <% else %>
+          <td><%= link_to "View Profile", user_path(user), class: "underline w-fit" %></td>
+          <td><%= link_to "Edit", edit_user_path(user), class: "underline w-fit" %></td>
+          <td><%= link_to "Delete", user_path(user), data: { turbo_method: :delete, turbo_confirm: 'Are you sure to delete this user?' }, class: "underline w-fit" %></td>
+        <% end %>
       </tr>
     <% end %>
   </tbody>

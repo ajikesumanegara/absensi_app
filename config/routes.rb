@@ -12,9 +12,12 @@ Rails.application.routes.draw do
 
   resources :companies
 
-  resources :invitations
+  resources :invitations, only: [:new, :create, :edit, :update]
 
-  resources :accept_invitations, only: [:new, :create]
+  resources :accept_invitations, only: [:edit, :update], param: :invite_token
+  get 'accept_invitations/:invite_token', to: 'accept_invitations#edit', as: 'accept_invitations'
+
+
 
   root 'attendances#new'
 

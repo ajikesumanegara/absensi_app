@@ -8,7 +8,11 @@ class UsersController < ApplicationController
   end
 
   def new
-    @user = User.new
+    if current_user
+      redirect_to new_invitation_path
+    else
+      @user = User.new
+    end
   end
 
   def create
@@ -32,7 +36,7 @@ class UsersController < ApplicationController
 
   end
 
-  def updated
+  def update
     @user = User.find(params[:id])
 
     if current_user == @user || current_user.as_owner
