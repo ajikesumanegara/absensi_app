@@ -17,7 +17,9 @@ Rails.application.routes.draw do
   resources :accept_invitations, only: [:edit, :update], param: :invite_token
   get 'accept_invitations/:invite_token', to: 'accept_invitations#edit', as: 'accept_invitations'
 
-
+  resources :passwords, only: [:new, :create, :edit, :update], param: :reset_password_token
+  get 'forgot_password', to: 'passwords#new', as: 'forgot_password'
+  get 'reset_password/:reset_password_token', to: 'passwords#edit', as: 'reset_password'
 
   root 'attendances#new'
 

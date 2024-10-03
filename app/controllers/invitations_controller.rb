@@ -12,7 +12,7 @@ class InvitationsController < ApplicationController
     @user.company = current_user.company
     @user.password = SecureRandom.hex(10)
     @user.invite_token = SecureRandom.hex(10)
-    @user.invite_token_expired_at = DateTime.now
+    @user.invite_token_expired_at = DateTime.now + 8.hours
 
     if @user.save
       flash[:success] = "Invitation sent successfully!"
@@ -31,7 +31,7 @@ class InvitationsController < ApplicationController
     @user = User.find(params[:id])
     @user.password = SecureRandom.hex(10)
     @user.invite_token = SecureRandom.hex(10)
-    @user.invite_token_expired_at = DateTime.now
+    @user.invite_token_expired_at = DateTime.now + 8.hours
 
     if @user.save
       flash[:success] = "New invitation sent successfully!"

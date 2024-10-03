@@ -16,7 +16,10 @@
           <%= f.text_field :username, class: "input-field", placeholder: "Enter your username" %>
         </div>
         <div class="form-control">
-          <%= render partial: 'shared/form/label', locals: { for_name: "user_password", placeholder: "Password" } %>
+          <div class="flex justify-between items-center">
+            <%= render partial: 'shared/form/label', locals: { for_name: "user_password", placeholder: "Password" } %>
+            <%= link_to "Forgot Password?", forgot_password_path, class: "text-grayscale-200 hover:text-grayscale-100 hover:underline" %>
+          </div>
           <%= render partial: 'shared/form/password_field', locals: { f: f, id: "user_password", name: "user[password]", placeholder: "Enter your password" } %>
         </div>
       </div>

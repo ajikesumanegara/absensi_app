@@ -16,7 +16,7 @@
         <td><%= user.id %></td>
         <td><%= user.full_name %></td>
         <% if user.invite_token_expired_at.present? %>
-          <% if DateTime.now > (user.invite_token_expired_at + 8.hours) %>
+          <% if DateTime.now > user.invite_token_expired_at %>
             <td><%= link_to "Re-generate Token", invitation_path(user), data: { turbo_method: :patch, turbo_confirm: 'Are you sure regenerate token for this user?' }, class: "underline" %></td>
           <% else %>
             <td>Waiting Approvals</td>

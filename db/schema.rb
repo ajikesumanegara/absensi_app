@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_09_27_073437) do
+ActiveRecord::Schema[7.0].define(version: 2024_10_02_072006) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -76,6 +76,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_09_27_073437) do
     t.datetime "invite_token_expired_at"
     t.string "password_digest"
     t.string "password_confirmation"
+    t.string "reset_password_token"
+    t.datetime "reset_password_token_expired_at"
     t.index ["company_id"], name: "index_users_on_company_id"
   end
 

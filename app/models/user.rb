@@ -2,6 +2,7 @@ class User < ApplicationRecord
   belongs_to :company, optional: true
   has_many :attendances
   before_save { self.email = email.downcase }
+  has_secure_password
   
   validates :username, presence: true, 
                     uniqueness: { case_sensitive: false }, 
@@ -11,6 +12,15 @@ class User < ApplicationRecord
                     uniqueness: { case_sensitive: false },
                     format: { with: VALID_EMAIL_REGEX }
   validates :full_name, presence: true, length: { minimum: 2, maximum: 25 }
+  
+  validates_presence_of :password, :password_confirmation, :if => :password_required?
+  validates_length_of :password, :password_confirmation, minimum: 6, :if => :password_required?
 
-  has_secure_password
+  def password_required?
+    @password_required
+  end
+
+  def password_required!
+    @password_required = true
+  end
 end
