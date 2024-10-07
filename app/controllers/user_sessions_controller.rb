@@ -3,7 +3,11 @@ class UserSessionsController < ApplicationController
   def new
     if current_user
       flash[:primary] = "You are already signed in!"
-      redirect_to root_path
+      if current_user.as_admin
+        redirect_to admin_dashboard_path
+      else
+        redirect_to root_path
+      end
     else
       @user = User.new
     end
@@ -15,7 +19,11 @@ class UserSessionsController < ApplicationController
     if @user && @user.authenticate(params[:user][:password])
       session[:user_id] = @user.id
       flash[:primary] = "Welcome back #{@user.full_name}!"
-      redirect_to root_path
+      if @user.as_admin
+        redirect_to admin_dashboard_path
+      else
+        redirect_to root_path
+      end
     else
       flash[:danger] = "Login failed! Please try again."
       redirect_to sign_in_path

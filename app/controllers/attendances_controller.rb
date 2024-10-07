@@ -24,10 +24,6 @@ class AttendancesController < ApplicationController
   end
 
   def new
-    unless request.path == root_path
-      redirect_to root_path
-    end
-
     @attendance = Attendance.new
   end
 

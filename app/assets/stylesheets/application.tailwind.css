@@ -86,6 +86,14 @@
   .flash-danger {
     @apply border-danger-300 bg-gradient-to-r from-danger-300/20 to-danger-300/0 ring-4 ring-danger-300/20;
   }
+
+  .sidebar__nav-link {
+    @apply p-4 flex items-center gap-5 text-grayscale-200 rounded-lg hover:text-white hover:bg-grayscale-300;
+  }
+
+  .sidebar__nav-link--active {
+    @apply bg-grayscale-300 text-white;
+  }
 }
 
 /* CUSTOM STYLE FOR PAGINATION */
