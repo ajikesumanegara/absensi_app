@@ -24,23 +24,36 @@ class PasswordsController < ApplicationController
   end
 
   def edit
-    @user = User.find_by(reset_password_token: params[:reset_password_token])
+    if params[:reset_password_token]
+      @user = User.find_by(reset_password_token: params[:reset_password_token])
 
-    if @user.nil? || DateTime.now > @user.reset_password_token_expired_at
-      flash[:danger] = "Invalid reset password token."
-      redirect_to root_path
+      if @user.nil? || DateTime.now > @user.reset_password_token_expired_at
+        flash[:danger] = "Invalid reset password token."
+        redirect_to root_path
+      end
+    elsif params[:id]
+      @user = User.find(params[:id])
     end
   end
 
   def update
-    @user = User.find_by(reset_password_token: params[:reset_password_token])
+    if params[:reset_password_token]
+      @user = User.find_by(reset_password_token: params[:reset_password_token])
+    elsif params[:id]
+      @user = User.find(params[:id])
+    end
+    
     @user.reset_password_token = nil
     @user.reset_password_token_expired_at = nil
     @user.password_required!
 
     if @user.update(user_params)
       flash[:success] = "Password updated successfully!"
-      redirect_to sign_in_path
+      if params[:reset_password_token]
+        redirect_to sign_in_path
+      elsif params[:id]
+        redirect_to root_path
+      end
     else
       render :edit, status: :unprocessable_entity
     end

@@ -19,4 +19,8 @@ class Attendance < ApplicationRecord
     ["clock_in", "clock_out", "created_at", "details", "id", "latitude", "longitude", "selfie_url", "status", "updated_at", "user_id"]
   end
 
+  def self.ransackable_associations(auth_object = nil)
+    ["company", "selfie_attachment", "selfie_blob", "user"]
+  end
+
 end

@@ -1,34 +1,172 @@
-<h1 class="text-grayscale-100">Users Listing</h1>
-</br>
-<%= link_to 'Add New User', new_invitation_path, class: "btn btn-primary w-fit" %>
-</br>
-<table class="w-full text-grayscale-100">
-  <thead>
-    <tr>
-      <th class="text-left">ID</th>
-      <th class="text-left">Name</th>
-      <th class="text-left" colspan="3">Action</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @users.each do |user| %>
-      <tr>
-        <td><%= user.id %></td>
-        <td><%= user.full_name %></td>
-        <% if user.invite_token_expired_at.present? %>
-          <% if DateTime.now > user.invite_token_expired_at %>
-            <td><%= link_to "Re-generate Token", invitation_path(user), data: { turbo_method: :patch, turbo_confirm: 'Are you sure regenerate token for this user?' }, class: "underline" %></td>
-          <% else %>
-            <td>Waiting Approvals</td>
+<div class="main-content__container w-full h-full p-4 xl:pr-8">
+  <div class="main-content__header w-full flex justify-between items-center gap-4 py-4 mb-2">
+    <button class="main-content__sidebar-trigger btn-circle btn-outline xl:hidden" onclick="toggleSidebar()" role="button">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-5">
+        <path fill-rule="evenodd" d="M3 6.75A.75.75 0 0 1 3.75 6h16.5a.75.75 0 0 1 0 1.5H3.75A.75.75 0 0 1 3 6.75ZM3 12a.75.75 0 0 1 .75-.75h16.5a.75.75 0 0 1 0 1.5H3.75A.75.75 0 0 1 3 12Zm0 5.25a.75.75 0 0 1 .75-.75h16.5a.75.75 0 0 1 0 1.5H3.75a.75.75 0 0 1-.75-.75Z" clip-rule="evenodd" />
+      </svg>        
+    </button>
+    <h3 class="main-content__heading heading-3 text-grayscale-100">Users Listing</h3>
+    <%= link_to new_invitation_path, class: "btn-circle xl:btn btn-primary xl:pl-4" do %>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-6">
+        <path d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z" />
+      </svg>
+      <span class="hidden xl:inline">Add New User</span>    
+    <% end %>
+  </div>
+  <div class="main-content__body p-4 bg-grayscale-400/75 border-2 border-grayscale-300/50 rounded-lg">
+    <div class="main-content__filter-container mb-0 md:mb-4">
+      <%= search_form_for @q, url: users_path, html: { class: "main-content__filter-form flex items-center gap-3 relative" } do |f| %>
+        <%= f.search_field :full_name_cont, class: "input-field max-w-sm text-base pl-12 rounded-full", placeholder: "Search by user's name..." %>
+        <%= button_tag type: 'submit', class: "text-grayscale-100 absolute left-4" do %>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-6">
+            <path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11ZM2 9a7 7 0 1 1 12.452 4.391l3.328 3.329a.75.75 0 1 1-1.06 1.06l-3.329-3.328A7 7 0 0 1 2 9Z" clip-rule="evenodd" />
+          </svg>
+        <% end %>        
+        <%= link_to users_path, class: "btn-circle md:btn-small btn-outline" do %>
+          <span class="hidden md:inline">Reset</span>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="md:hidden size-5">
+            <path d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z" />
+          </svg>          
+        <% end %>
+      <% end %>
+    </div>
+    <table class="main-content__table table mb-2 md:mb-4">
+      <thead>
+        <tr class="collapse md:visible">
+          <th class="w-1/3">Name</th>
+          <th class="w-1/3">Email</th>
+          <th class="w-1/3">Status</th>
+          <th class="w-min">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if @users.any? %>
+          <% @users.each do |user| %>
+            <tr>
+              <!-- Table Row for Mobile View -->
+              <td colspan="4" class="md:hidden">
+                <div class="table__item-card">
+                  <p class="capitalize mb-0.5"><%= user.full_name %></p>
+                  <p class="mb-2"><%= user.email %></p>
+                  <div class="flex justify-between items-center gap-2">
+                    <% if user.invite_token_expired_at.present? %>
+                      <% if DateTime.now > user.invite_token_expired_at %>
+                        <span class="w-fit badge badge-danger">Expired</span>
+                        <div class="flex gap-3">
+                          <%= link_to invitation_path(user), data: { turbo_method: :patch, turbo_confirm: 'Are you sure regenerate token for this user?' }, class: "flex items-center gap-1.5 text-grayscale-100/50 hover:text-grayscale-100", title: "Resend Invitation" do %>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
+                              <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
+                            </svg>
+                            <span>Re-invite</span>          
+                          <% end %>
+                          <%= link_to user_path(user), data: { turbo_method: :delete, turbo_confirm: 'Are you sure to delete this user?' }, class: "flex items-center gap-1.5 text-grayscale-100/50 hover:text-grayscale-100", title: "Delete" do %>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
+                              <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                            </svg>
+                            <span>Delete</span>              
+                          <% end %>
+                        </div>
+                      <% else %>
+                        <span class="w-fit badge badge-primary">Waiting Approval</span>
+                        <%= link_to user_path(user), data: { turbo_method: :delete, turbo_confirm: 'Are you sure to delete this user?' }, class: "flex items-center gap-1.5 text-grayscale-100/50 hover:text-grayscale-100", title: "Delete" do %>
+                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                          </svg>
+                          <span>Delete</span>              
+                        <% end %>
+                      <% end %>
+                    <% else %>
+                      <span class="w-fit badge badge-success">Active</span>
+                      <div class="flex gap-3">
+                        <% if user.as_owner %>
+                          <%= link_to user_path(user), class: "flex items-center gap-1.5 text-grayscale-100/50 hover:text-grayscale-100" do %>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
+                              <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+                              <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                            </svg>                      
+                            <span>Show</span>
+                          <% end %>
+                        <% else %>
+                          <%= link_to user_path(user), class: "flex items-center gap-1.5 text-grayscale-100/50 hover:text-grayscale-100" do %>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
+                              <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+                              <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                            </svg>                      
+                            <span>Show</span>
+                          <% end %>
+                          <%= link_to user_path(user), data: { turbo_method: :delete, turbo_confirm: 'Are you sure to delete this user?' }, class: "flex items-center gap-1.5 text-grayscale-100/50 hover:text-grayscale-100", title: "Delete" do %>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
+                              <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                            </svg>
+                            <span>Delete</span>              
+                          <% end %>
+                        <% end %>
+                      </div>
+                    <% end %>  
+                  </div>
+                </div>
+              </td>
+              <!-- Table Row for Tablet & Desktop View -->
+              <td class="hidden md:table-cell">
+                <% if user.as_owner %>
+                  <p class="capitalize">
+                    <%= user.full_name %> <span class="ml-1.5 opacity-50">( Owner )</span>
+                  </p>
+                <% else %>
+                  <%= link_to user.full_name, user_path(user), class: "capitalize hover:underline" %>
+                <% end %>
+              </td>
+              <td class="hidden md:table-cell">
+                <%= user.email %>
+              </td>
+              <td class="hidden md:table-cell">
+                <% if user.invite_token_expired_at.present? %>
+                  <% if DateTime.now > user.invite_token_expired_at %>
+                    <span class="badge badge-danger">Expired Invitation</span>
+                  <% else %>
+                    <span class="badge badge-primary">Waiting Approvals</span>
+                  <% end %>
+                <% else %>
+                  <span class="badge badge-success">Active</span>
+                <% end %>
+              </td>
+              <td class="hidden md:table-cell">
+                <div class="flex justify-end gap-4 pr-2">
+                  <% if !user.as_owner %>
+                    <% if user.invite_token_expired_at.present? %>
+                      <% if DateTime.now > user.invite_token_expired_at %>
+                        <%= link_to invitation_path(user), data: { turbo_method: :patch, turbo_confirm: 'Are you sure regenerate token for this user?' }, class: "text-grayscale-100/50 hover:text-grayscale-100", title: "Resend Invitation" do %>
+                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
+                          </svg>                  
+                        <% end %>
+                      <% end %>
+                    <% else %>
+                      <%= link_to edit_user_path(user), class: "text-grayscale-100/50 hover:text-grayscale-100", title: "Edit" do %>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+                        </svg>                                                   
+                      <% end %>
+                    <% end %>
+                    <%= link_to user_path(user), data: { turbo_method: :delete, turbo_confirm: 'Are you sure to delete this user?' }, class: "text-grayscale-100/50 hover:text-grayscale-100", title: "Delete" do %>
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                      </svg>                  
+                    <% end %>
+                  <% end %>
+                </div>
+              </td>
+            </tr>
           <% end %>
         <% else %>
-          <td><%= link_to "View Profile", user_path(user), class: "underline w-fit" %></td>
-          <td><%= link_to "Edit", edit_user_path(user), class: "underline w-fit" %></td>
-          <td><%= link_to "Delete", user_path(user), data: { turbo_method: :delete, turbo_confirm: 'Are you sure to delete this user?' }, class: "underline w-fit" %></td>
+          <tr class="table__row--inactive">
+            <td colspan="6">No Data Found</td>
+          </tr>
         <% end %>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
-</br>
-<%= link_to "<- Back to Home", root_path, class: "text-grayscale-100" %>
+      </tbody>
+    </table>
+    <div class="main-content__pagination w-full flex justify-center">
+      <%= render partial: 'shared/pagination' %>
+    </div>
+  </div>
+</div>

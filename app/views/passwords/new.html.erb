@@ -1,23 +1,19 @@
-<div class="container h-svh md:h-screen flex flex-col justify-center p-4">
-  <div class="menu-bar flex">
-    <%= link_to sign_in_path, class: "menu-bar__previous-link btn-circle btn-outline mb-10" do %>
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
-        <path fill-rule="evenodd" d="M11.03 3.97a.75.75 0 0 1 0 1.06l-6.22 6.22H21a.75.75 0 0 1 0 1.5H4.81l6.22 6.22a.75.75 0 1 1-1.06 1.06l-7.5-7.5a.75.75 0 0 1 0-1.06l7.5-7.5a.75.75 0 0 1 1.06 0Z" clip-rule="evenodd" />
-      </svg>  
-    <% end %>
-  </div>
-  <div class="main-content max-w-sm mx-auto mb-20">
-    <h4 class="main-content__heading heading-2 text-grayscale-100 mb-2">Forgot Password</h4>
-    <p class="main-content__subheading text-body text-grayscale-100 mb-4">No worries! Just enter your email address below, and we’ll send you a link to reset your password. It’s quick and easy!</p>
-    <%= form_with model: @user, url: passwords_path do |f| %>
-      <div class="main-content__form-container space-y-4 mb-6">
-        <div class="form-control">
-          <%= render partial: 'shared/form/label', locals: { for_name: "email", placeholder: "Email" } %>
-          <%= f.email_field :email, class: "input-field", placeholder: "johndoe@example.com", required: true %>
-        </div>
+<div class="main-content__container w-full max-w-sm h-full flex flex-col justify-center p-4 pb-10 mx-auto">
+  <%= link_to sign_in_path, class: "main-content__return-btn w-fit btn-circle btn-outline mb-10" do %>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
+      <path fill-rule="evenodd" d="M11.03 3.97a.75.75 0 0 1 0 1.06l-6.22 6.22H21a.75.75 0 0 1 0 1.5H4.81l6.22 6.22a.75.75 0 1 1-1.06 1.06l-7.5-7.5a.75.75 0 0 1 0-1.06l7.5-7.5a.75.75 0 0 1 1.06 0Z" clip-rule="evenodd" />
+    </svg>  
+  <% end %>
+  <h3 class="main-content__heading heading-3 text-grayscale-100 mb-2">Forgot Password</h3>
+  <p class="main-content__subheading text-body text-grayscale-100 mb-4">No worries! Just enter your email address below, and we’ll send you a link to reset your password. It’s quick and easy!</p>
+  <%= form_with model: @user, url: passwords_path do |f| %>
+    <div class="main-content__form-container space-y-4 mb-6">
+      <div class="form-control">
+        <%= render partial: 'shared/form/label', locals: { for_name: "email", placeholder: "Email" } %>
+        <%= f.email_field :email, class: "input-field", placeholder: "johndoe@example.com", required: true %>
       </div>
-      <%= f.submit "SUBMIT", class: "btn btn-primary" %>
-    <% end %>
-  </div>
+    </div>
+    <%= f.submit "SUBMIT", class: "btn btn-primary" %>
+  <% end %>
 </div>
 

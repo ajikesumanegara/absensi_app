@@ -1,9 +1,9 @@
 Rails.application.routes.draw do  
   resources :users
+  get 'sign_up', to: 'users#new', as: 'sign_up'
 
   resources :user_sessions, only: [:new, :create, :destroy]
   get 'sign_in', to: 'user_sessions#new', as: 'sign_in'
-  get 'sign_up', to: 'users#new', as: 'sign_up'
 
   resources :attendances do
     get 'new_permission', on: :collection
@@ -16,13 +16,15 @@ Rails.application.routes.draw do
   resources :accept_invitations, only: [:edit, :update], param: :invite_token
   get 'accept_invitations/:invite_token', to: 'accept_invitations#edit', as: 'accept_invitations'
 
-  resources :passwords, only: [:new, :create, :edit, :update], param: :reset_password_token
+  resources :passwords, only: [:new, :create, :edit, :update]
   get 'forgot_password', to: 'passwords#new', as: 'forgot_password'
   get 'reset_password/:reset_password_token', to: 'passwords#edit', as: 'reset_password'
+  patch 'reset_password/:reset_password_token', to: 'passwords#update', as: 'update_password'
 
   namespace :admin do
     get 'dashboard', to: 'dashboard#index'
-    resources :users
+    resources :users, except: [:new, :create]
+    resources :invitations, only: [:new, :create, :edit, :update]
     resources :companies
     resources :attendances, only: [:index, :show]
   end

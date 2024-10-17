@@ -13,7 +13,7 @@ class AttendancesController < ApplicationController
     @employees = current_company.users
     @search_params = search_params
     @q = @attendances.ransack(@search_params)
-    @pagy, @attendances = pagy(@q.result, limit: 2)
+    @pagy, @attendances = pagy(@q.result, limit: 10)
 
     respond_to do |format|
       format.html
@@ -113,7 +113,7 @@ class AttendancesController < ApplicationController
         flash[:success] = "Your attendance has been successfully recorded. Keep up the good work!"
         redirect_to root_path
       else
-        @attendance.errors.add(:base, "You have left before your work hours are completed. Please fill out the form below to continue with your clock-out, or return if you are not leaving yet.")
+        @attendance.errors.add(:base, "You left early. Fill out the form to clock out or go back if you're staying.")
         render :edit, status: :unprocessable_entity
       end
     end

@@ -1,0 +1,31 @@
+<h1>Edit <%= @user.full_name %>'s Profile</h1>
+</br>
+<%= form_with(model: @user, url: admin_user_path(@user)) do |form| %>
+  <% if @user.errors.any? %>
+  <div class="flash flash-danger mb-4">
+    <h5 class="flash__instruction text-bold text-danger-300 mb-1">
+      Please correct the following errors:
+    </h5>
+    <ul class="flash__list-errors list-disc pl-4">
+      <% @user.errors.full_messages.each do |message| %>
+        <li class="flash__error-item text-small text-grayscale-100"><%= message %></li>
+      <% end %>
+    </ul>
+  </div>
+  <% end %>
+  <div>
+    <%= form.label :full_name, "Nama" %>
+    <%= form.text_field :full_name, required: true %>
+  </div>
+  <div>
+    <%= form.label :email, "Email" %>
+    <%= form.email_field :email, required: true %>
+  </div>
+  <div>
+    <%= form.label :username, "Username" %>
+    <%= form.text_field :username, required: true %>
+  </div>
+  <%= form.submit %>
+<% end %>
+</br>
+<%= link_to "<- Back to Listing Page", admin_users_path %>

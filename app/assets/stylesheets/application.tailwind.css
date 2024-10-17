@@ -40,7 +40,11 @@
   }
 
   .btn {
-    @apply flex items-center gap-2 px-6 py-3 text-base md:text-lg rounded-full cursor-pointer;
+    @apply flex justify-center items-center gap-2 px-6 py-3 text-base md:text-lg rounded-full cursor-pointer;
+  }
+
+  .btn-small {
+    @apply flex justify-center items-center gap-2 px-4 py-2 text-base rounded-full cursor-pointer;
   }
 
   .btn-circle {
@@ -88,18 +92,74 @@
   }
 
   .sidebar__nav-link {
-    @apply p-4 flex items-center gap-5 text-grayscale-200 rounded-lg hover:text-white hover:bg-grayscale-300;
+    @apply p-4 flex items-center gap-5 text-grayscale-200 rounded-lg hover:text-grayscale-100 hover:bg-grayscale-300/50;
   }
 
   .sidebar__nav-link--active {
-    @apply bg-grayscale-300 text-white;
+    @apply bg-grayscale-300/50 text-grayscale-100;
+  }
+
+  .badge {
+    @apply px-2 py-1 border rounded-full ;
+  }
+
+  .badge-primary {
+    @apply border-primary-300 text-primary-300;
+  }
+
+  .badge-success {
+    @apply border-success-300 text-success-300;
+  }
+
+  .badge-danger {
+    @apply border-danger-300 text-danger-300;
+  }
+
+  /* CUSTOM STYLE FOR TABLE */
+  .table {
+    @apply w-full table-fixed md:table-auto border-separate border-spacing-y-2 md:border-collapse md:border-spacing-y-0 text-grayscale-100;
+  }
+
+  .table thead tr {
+    @apply bg-grayscale-300/50 rounded-lg;
+  }
+
+  .table thead tr th {
+    @apply px-4 py-3 uppercase text-left;
+  }
+
+  .table thead tr th:first-child {
+    @apply rounded-l-lg;
+  }
+
+  .table thead tr th:last-child {
+    @apply pl-4 pr-8 rounded-r-lg;
+  }
+
+  .table tbody tr {
+    @apply md:border-b md:border-grayscale-300/50 md:hover:bg-grayscale-300/25;
+  }
+
+  .table tbody tr td {
+    @apply md:p-4;
+  }
+
+  .table tbody tr.table__row--inactive {
+    @apply border-0 hover:bg-transparent;
+  }
+
+  .table tbody tr.table__row--inactive td {
+    @apply h-40 text-center;
+  }
+
+  .table__item-card {
+    @apply w-full flex flex-col p-4 bg-grayscale-300/50 rounded-lg;
   }
 }
 
 /* CUSTOM STYLE FOR PAGINATION */
-
 .pagy {
-  @apply flex space-x-1 font-semibold text-sm text-grayscale-100;
+  @apply flex space-x-2 font-semibold text-sm text-grayscale-100;
 }
 
 .pagy a {

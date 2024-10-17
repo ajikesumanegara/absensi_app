@@ -1,7 +1,45 @@
-<h1 class="heading-4 text-grayscale-100 mb-4">Hello <%= @user.full_name %>!</h1>
-
-<ul class="text-grayscale-100">
-  <% @user.attendances.each do |attendance| %>
-    <li>Clock In: <%= attendance.clock_in %> | Clock Out: <%= attendance.clock_out %> | Status: <%= attendance.status %> | Details: <%= attendance.details %></li>
+<div class="main-content__container w-full max-w-sm h-full flex flex-col justify-center p-4 pb-20 mx-auto">
+  <% if current_user != @user %>
+    <%= link_to users_path, class: "main-content__return-btn w-fit btn-circle btn-outline mb-10" do %>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
+        <path fill-rule="evenodd" d="M11.03 3.97a.75.75 0 0 1 0 1.06l-6.22 6.22H21a.75.75 0 0 1 0 1.5H4.81l6.22 6.22a.75.75 0 1 1-1.06 1.06l-7.5-7.5a.75.75 0 0 1 0-1.06l7.5-7.5a.75.75 0 0 1 1.06 0Z" clip-rule="evenodd" />
+      </svg>  
+    <% end %>
   <% end %>
-</ul>
+  <h3 class="main-content__heading heading-3 capitalize text-grayscale-100 mb-2">
+    Profile Details
+  </h3>
+  <ul class="main-content__detail-information mb-4">
+    <li class="py-4 flex justify-between items-center border-b border-grayscale-100/10">
+      <span class="text-body text-grayscale-100/50">
+        Full Name
+      </span>
+      <span class="text-bold capitalize">
+        <%= @user.full_name %>
+      </span>
+    </li>
+    <li class="py-4 flex justify-between items-center border-b border-grayscale-100/10">
+      <span class="text-body text-grayscale-100/50">
+        Username
+      </span>
+      <span class="text-bold">
+        <%= @user.username %>
+      </span>
+    </li>
+    <li class="py-4 flex justify-between items-center border-b border-grayscale-100/10">
+      <span class="text-body text-grayscale-100/50">
+        Email
+      </span>
+      <span class="text-bold">
+        <%= @user.email %>
+      </span>
+    </li>
+  </ul>
+  <%= link_to edit_user_path(@user), class: "btn btn-primary pr-10 mb-3" do %>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-5">
+      <path d="M21.731 2.269a2.625 2.625 0 0 0-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 0 0 0-3.712ZM19.513 8.199l-3.712-3.712-12.15 12.15a5.25 5.25 0 0 0-1.32 2.214l-.8 2.685a.75.75 0 0 0 .933.933l2.685-.8a5.25 5.25 0 0 0 2.214-1.32L19.513 8.2Z" />
+    </svg>  
+    <span>Edit</span>
+  <% end %>
+  <%= link_to "Reset Password", edit_password_path(@user), class: "btn btn-outline" %>
+</div>

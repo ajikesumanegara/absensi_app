@@ -1,0 +1,63 @@
+<h1>Buat User Baru</h1>
+
+<%= form_with(model: @user, url: admin_invitations_path) do |form| %>
+  <% if @user.errors.any? %>
+    <div class="flash flash-danger mb-4">
+      <h5 class="flash__instruction text-bold text-danger-300 mb-1">
+        Please correct the following errors:
+      </h5>
+      <ul class="flash__list-errors list-disc pl-4">
+        <% @user.errors.full_messages.each do |message| %>
+          <li class="flash__error-item text-small text-grayscale-100"><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+  <h2>Informasi User</h2>
+  <div>
+    <%= form.label :full_name, "Nama" %>
+    <%= form.text_field :full_name, required: true %>
+  </div>
+  <div>
+    <%= form.label :email, "Email" %>
+    <%= form.email_field :email, required: true %>
+  </div>
+  <div>
+    <input type="checkbox" id="set_as_owner" name="set_as_owner" onchange="toggleForm()">
+    <label for="set_as_owner">Set user as company owner</label>
+  </div>
+  <%= fields_for :company, @company do |company_form| %>
+    <div id="companyInput"></div>
+  <% end %>
+  <div id="companySelect">
+    <%= form.label :company_id, "Nama" %>
+    <select name="user[company_id]" id="user_company_id">
+      <option value="" selected disabled>Select Company</option>
+      <% @companies.each do |company| %>
+        <option value="<%= company.id %>"><%= company.name %></option>
+      <% end %>
+    </select>
+  </div>
+  <%= form.submit "Buat User dan Perusahaan", class: 'btn btn-success' %>
+<% end %>
+
+<%= link_to 'Kembali ke Daftar User', admin_users_path %>
+
+<script>
+  function toggleForm() {
+    const checkbox = document.getElementById('set_as_owner');
+    const companyInput = document.getElementById('companyInput');
+    const companySelect = document.getElementById('companySelect');
+
+    if (checkbox.checked) {
+      companyInput.innerHTML = `
+        <label for="company_name">Nama Perusahaan</label>
+        <input type="text" id="company_name" name="company[name]" required>
+      `;
+    } else {
+      companyInput.innerHTML = "";
+    }
+
+    companySelect.classList.toggle("hidden");
+  }
+</script>

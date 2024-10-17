@@ -1,1 +1,49 @@
-<h1 class="heading-4">Attendances</h1>
+<div class="content__header">
+  <h2 class="text-3xl font-semibold leading-none text-grayscale-300">
+    Companies
+  </h2>
+</div>
+</br>
+<div class="content__filter">
+  <%= search_form_for @q, url: admin_companies_path, html: { class: "flex gap-2" } do |f| %>
+    <%= f.label :name_cont %>
+    <%= f.search_field :name_cont %>
+    <%= link_to "Reset", admin_companies_path %>
+    <%= f.submit id: "searchBtn", class: "btn btn-primary" %>
+  <% end %>
+</div>
+</br>
+<div class="content__body">
+  <table class="w-full">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Owner</th>
+        <th>Number of Members</th>
+        <th colspan="3">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% if @companies.any? %>
+        <% @companies.each do |company| %>
+          <tr>
+            <td><%= company.name %></td>
+            <td><%= company.users.find_by(as_owner: true).full_name %></td>
+            <td><%= company.users.count %></td>
+            <td><%= link_to "Show", admin_company_path(company) %></td>
+            <td><%= link_to "Edit", edit_admin_company_path(company) %></td>
+            <td><%= link_to "Delete", admin_company_path(company), data: { turbo_method: :delete, turbo_confirm: 'Are you sure to delete this company?'} %></td>
+          </tr>
+        <% end %>
+      <% else %>
+        <tr>
+          <td colspan="6" class="text-center">No data found.</td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  </br>
+  <div class="bg-grayscale-500">
+    <%== pagy_nav(@pagy) %>
+  </div>
+</div>

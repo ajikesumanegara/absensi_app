@@ -1,47 +1,41 @@
-
-
-<div class="container h-screen flex flex-col justify-center p-4">
-  <div class="menu-bar flex">
-    <%= link_to root_path, class: "menu-bar__previous-link btn-circle btn-outline mb-10" do %>
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
-        <path fill-rule="evenodd" d="M11.03 3.97a.75.75 0 0 1 0 1.06l-6.22 6.22H21a.75.75 0 0 1 0 1.5H4.81l6.22 6.22a.75.75 0 1 1-1.06 1.06l-7.5-7.5a.75.75 0 0 1 0-1.06l7.5-7.5a.75.75 0 0 1 1.06 0Z" clip-rule="evenodd" />
-      </svg>  
-    <% end %>
-  </div>
-  <div class="main-content max-w-xs md:max-w-sm mx-auto mb-20">
-    <h4 class="main-content__heading heading-4 text-grayscale-100">Permission Form</h4>
-    <p class="main-content__subheading text-body text-grayscale-100 mb-4">Please fill in this form to send the permission.</p>
-    <% if @attendance.errors.any? %>
-      <div class="flash flash-danger mb-4">
-        <h5 class="flash__instruction text-bold text-danger-300 mb-1">
-          Please correct the following errors:
-        </h5>
-        <ul class="flash__list-errors list-disc pl-4">
-          <% @attendance.errors.full_messages.each do |message| %>
-            <li class="flash__error-item text-small text-grayscale-100"><%= message %></li>
-          <% end %>
-        </ul>
-      </div>
-    <% end %>
-    <%= form_with(model: @attendance, url: attendances_path(context: 'permission_details'), class: "space-y-4") do |f| %>
-      <div class="form-control">
-        <%= render partial: 'shared/form/label', locals: { for_name: "permission_type", placeholder: "Permission Type" } %>
-        <div class="radio-group__container flex items-center gap-4">
-          <div class="radio-group flex-1 flex items-center space-x-3">
-            <%= f.radio_button :status, "sick", class: "radio" %>
-            <%= f.label :status_sick, "Sick", class: "text-body text-grayscale-100" %>
-          </div>
-          <div class="radio-group flex-1 flex items-center space-x-3">
-            <%= f.radio_button :status, "leave", class: "radio" %>
-            <%= f.label :status_leave, "Leave", class: "text-body text-grayscale-100" %>
-          </div>
+<div class="main-content__container w-full max-w-md h-full flex flex-col justify-center p-4 pb-10 mx-auto">
+  <%= link_to root_path, class: "main-content__return-btn w-fit btn-circle btn-outline mb-10" do %>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
+      <path fill-rule="evenodd" d="M11.03 3.97a.75.75 0 0 1 0 1.06l-6.22 6.22H21a.75.75 0 0 1 0 1.5H4.81l6.22 6.22a.75.75 0 1 1-1.06 1.06l-7.5-7.5a.75.75 0 0 1 0-1.06l7.5-7.5a.75.75 0 0 1 1.06 0Z" clip-rule="evenodd" />
+    </svg>  
+  <% end %>
+  <h3 class="main-content__heading heading-3 text-grayscale-100 mb-2">Permission Form</h3>
+  <p class="main-content__subheading text-body text-grayscale-100 mb-4">Please fill in this form to send the permission.</p>
+  <% if @attendance.errors.any? %>
+    <div class="flash flash-danger my-4">
+      <h5 class="flash__instruction text-bold text-danger-300 mb-1">
+        Please correct the following errors:
+      </h5>
+      <ul class="flash__list-errors list-disc pl-4">
+        <% @attendance.errors.full_messages.each do |message| %>
+          <li class="flash__error-item text-small text-grayscale-100"><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+  <%= form_with(model: @attendance, url: attendances_path(context: 'permission_details'), class: "space-y-4") do |f| %>
+    <div class="form-control">
+      <%= render partial: 'shared/form/label', locals: { for_name: "permission_type", placeholder: "Permission Type" } %>
+      <div class="radio-group__container flex items-center gap-4">
+        <div class="radio-group flex-1 flex items-center space-x-3">
+          <%= f.radio_button :status, "sick", class: "radio" %>
+          <%= f.label :status_sick, "Sick", class: "text-body text-grayscale-100" %>
+        </div>
+        <div class="radio-group flex-1 flex items-center space-x-3">
+          <%= f.radio_button :status, "leave", class: "radio" %>
+          <%= f.label :status_leave, "Leave", class: "text-body text-grayscale-100" %>
         </div>
       </div>
-      <div class="form-control">
-        <%= render partial: 'shared/form/label', locals: { for_name: "details", placeholder: "Reason" } %>
-        <%= f.text_area :details, class: "textarea", placeholder: "Type your reason here", rows: 3 %>
-      </div>
-      <%= f.submit "SUBMIT", class: "btn btn-primary" %>
-    <% end %>
-  </div>
+    </div>
+    <div class="form-control">
+      <%= render partial: 'shared/form/label', locals: { for_name: "details", placeholder: "Reason" } %>
+      <%= f.text_area :details, class: "textarea", placeholder: "Type your reason here", rows: 3,required: "true" %>
+    </div>
+    <%= f.submit "SUBMIT", class: "btn btn-primary" %>
+  <% end %>
 </div>

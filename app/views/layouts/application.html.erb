@@ -10,35 +10,37 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body class="bg-grayscale-500">
-    <main class="max-w-2xl mx-auto">
+  <body class="w-full h-svh md:h-screen flex bg-grayscale-500 text-grayscale-100">
+    <% if current_user %>
+      <%= render 'shared/sidebar' %>
+    <% end %>
+    <main class="w-full h-full flex flex-col">
       <% flash.each do |type, msg| %>
-        <div id="flash" class="flash flash-<%= type %> absolute top-4 left-1/2 -translate-x-1/2 flex items-center gap-4">
-          <% if type == "primary" %>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-6 text-primary-300 shrink-0">
-              <path fill-rule="evenodd" d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-7-4a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM9 9a.75.75 0 0 0 0 1.5h.253a.25.25 0 0 1 .244.304l-.459 2.066A1.75 1.75 0 0 0 10.747 15H11a.75.75 0 0 0 0-1.5h-.253a.25.25 0 0 1-.244-.304l.459-2.066A1.75 1.75 0 0 0 9.253 9H9Z" clip-rule="evenodd" />
-            </svg>                    
-          <% elsif type == "success" %>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-6 text-success-300 shrink-0">
-              <path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z" clip-rule="evenodd" />
-            </svg>                    
-          <% elsif type == "danger" %>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-6 text-danger-300 shrink-0">
-              <path fill-rule="evenodd" d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-8-5a.75.75 0 0 1 .75.75v4.5a.75.75 0 0 1-1.5 0v-4.5A.75.75 0 0 1 10 5Zm0 10a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" clip-rule="evenodd" />
-            </svg>                 
-          <% end %>
-          <p class="flash__description text-grayscale-100"><%= msg %></p>
+        <div class="main-section__flash-container p-4 flex-none">
+          <div id="flash" class="flash flash-<%= type %> w-full flex items-center gap-4 mx-auto">
+            <% if type == "primary" %>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-6 text-primary-300 shrink-0">
+                <path fill-rule="evenodd" d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-7-4a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM9 9a.75.75 0 0 0 0 1.5h.253a.25.25 0 0 1 .244.304l-.459 2.066A1.75 1.75 0 0 0 10.747 15H11a.75.75 0 0 0 0-1.5h-.253a.25.25 0 0 1-.244-.304l.459-2.066A1.75 1.75 0 0 0 9.253 9H9Z" clip-rule="evenodd" />
+              </svg>                    
+            <% elsif type == "success" %>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-6 text-success-300 shrink-0">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z" clip-rule="evenodd" />
+              </svg>                    
+            <% elsif type == "danger" %>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-6 text-danger-300 shrink-0">
+                <path fill-rule="evenodd" d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-8-5a.75.75 0 0 1 .75.75v4.5a.75.75 0 0 1-1.5 0v-4.5A.75.75 0 0 1 10 5Zm0 10a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" clip-rule="evenodd" />
+              </svg>                 
+            <% end %>
+            <p class="flash__description text-grayscale-100"><%= msg %></p>
+          </div>
         </div>
       <% end %>
       <%= yield %>
     </main>
-    <% if current_user %>
-      <%= render 'shared/sidebar' %>
-    <% end %>
   </body>
   <script>
     setTimeout(function(){
-      document.getElementById("flash").style.display = "none";
+      document.querySelector(".main-section__flash-container").style.display = "none";
       }, 5000);
   </script>
 </html>

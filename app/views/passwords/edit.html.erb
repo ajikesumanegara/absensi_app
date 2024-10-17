@@ -1,43 +1,43 @@
-<div class="container h-svh md:h-screen flex flex-col justify-center p-4">
-  <div class="menu-bar flex">
-    <%= link_to root_path, class: "menu-bar__previous-link btn-circle btn-outline mb-10" do %>
+<div class="main-content__container w-full max-w-sm h-full flex flex-col justify-center p-4 pb-20 mx-auto">
+  <% if current_user %>
+    <%= link_to :back, class: "main-content__return-btn w-fit btn-circle btn-outline mb-10" do %>
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
         <path fill-rule="evenodd" d="M11.03 3.97a.75.75 0 0 1 0 1.06l-6.22 6.22H21a.75.75 0 0 1 0 1.5H4.81l6.22 6.22a.75.75 0 1 1-1.06 1.06l-7.5-7.5a.75.75 0 0 1 0-1.06l7.5-7.5a.75.75 0 0 1 1.06 0Z" clip-rule="evenodd" />
       </svg>  
     <% end %>
-  </div>
-  <div class="main-content max-w-sm mx-auto mb-20">
-    <h4 class="main-content__heading heading-2 text-grayscale-100 mb-2">Reset Password</h4>
-    <p class="main-content__subheading text-body text-grayscale-100 mb-4">Please fill in this form to change your password</p>
-    <%= form_with model: @user, url: password_path do |f| %>
-      <% if @user.errors.any? %>
-        <div class="flash flash-danger mb-4">
-          <h5 class="flash__instruction text-bold text-danger-300 mb-1">
-            Please correct the following errors:
-          </h5>
-          <ul class="flash__list-errors list-disc pl-4">
-            <% @user.errors.full_messages.each do |message| %>
-              <li class="flash__error-item text-small text-grayscale-100"><%= message %></li>
-            <% end %>
-          </ul>
-        </div>
-      <% end %>
-      <div class="main-content__form-container space-y-4 mb-6">
-        <div class="form-control">
-          <%= render partial: 'shared/form/label', locals: { for_name: "email", placeholder: "Email" } %>
-          <%= f.text_field :email, class: "input-field", placeholder: "", disabled: "true" %>
-        </div>
-        <div class="form-control">
-          <%= render partial: "shared/form/label", locals: { for_name: "user_password", placeholder: "New Password"} %>
-          <%= render partial: "shared/form/password_field", locals: { f: f, id: "user_password", name: "user[password]", placeholder: "Enter your password"} %>
-        </div>
-        <div class="form-control">
-          <%= render partial: "shared/form/label", locals: { for_name: "user_password_confirmation", placeholder: "Password Confirmation"} %>
-          <%= render partial: "shared/form/password_field", locals: { f: f, id: "user_password_confirmation", name: "user[password_confirmation]", placeholder: "Enter your password"} %>
-        </div>
-      </div>
-      <%= f.submit "SUBMIT", class: "btn btn-primary" %>
+  <% else %>
+    <%= link_to root_path, class: "main-content__home-btn w-fit btn-circle btn-outline mb-10" do %>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-5">
+        <path fill-rule="evenodd" d="M9.293 2.293a1 1 0 0 1 1.414 0l7 7A1 1 0 0 1 17 11h-1v6a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-3a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-6H3a1 1 0 0 1-.707-1.707l7-7Z" clip-rule="evenodd" />
+      </svg>      
     <% end %>
-  </div>
+  <% end %>
+  <h3 class="main-content__heading heading-3 text-grayscale-100 mb-2">Reset Password</h3>
+  <p class="main-content__subheading text-body text-grayscale-100 mb-4">Please fill in this form to change your password</p>
+  <%= form_with model: @user, url: params[:reset_password_token] ? update_password_path : password_path do |f| %>
+    <% if @user.errors.any? %>
+      <div class="flash flash-danger mb-4">
+        <h5 class="flash__instruction text-bold text-danger-300 mb-1">
+          Please correct the following errors:
+        </h5>
+        <ul class="flash__list-errors list-disc pl-4">
+          <% @user.errors.full_messages.each do |message| %>
+            <li class="flash__error-item text-small text-grayscale-100"><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+    <div class="main-content__form-container space-y-4 mb-6">
+      <div class="form-control">
+        <%= render partial: "shared/form/label", locals: { for_name: "user_password", placeholder: "New Password"} %>
+        <%= render partial: "shared/form/password_field", locals: { f: f, id: "user_password", name: "user[password]", placeholder: "Enter your password"} %>
+      </div>
+      <div class="form-control">
+        <%= render partial: "shared/form/label", locals: { for_name: "user_password_confirmation", placeholder: "Password Confirmation"} %>
+        <%= render partial: "shared/form/password_field", locals: { f: f, id: "user_password_confirmation", name: "user[password_confirmation]", placeholder: "Enter your password"} %>
+      </div>
+    </div>
+    <%= f.submit "SUBMIT", class: "btn btn-primary" %>
+  <% end %>
 </div>
 

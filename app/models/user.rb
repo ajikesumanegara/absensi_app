@@ -23,4 +23,14 @@ class User < ApplicationRecord
   def password_required!
     @password_required = true
   end
+
+  def self.ransackable_attributes(auth_object = nil)
+    ["as_admin", "as_owner", "company_id", "created_at", "email", "full_name", "id", "invite_token", "invite_token_expired_at", "password_confirmation", "password_digest", "reset_password_token", "reset_password_token_expired_at", "updated_at", "username"]
+  end
+
+  def companies_attributes=(companies_attributes)
+    companies_attributes.each do |i, company_attributes|
+      self.companies.build(company_attributes)
+    end
+  end
 end

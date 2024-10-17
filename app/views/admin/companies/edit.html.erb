@@ -1,0 +1,25 @@
+<h1>Edit <%= @company.name %>'s Profile</h1>
+</br>
+<%= form_with model: @company, url: admin_company_path do |f| %>
+  <% if @company.errors.any? %>
+    <div class="flash flash-danger mb-4">
+      <h5 class="flash__instruction text-bold text-danger-300 mb-1">
+        Please correct the following errors:
+      </h5>
+      <ul class="flash__list-errors list-disc pl-4">
+        <% @company.errors.full_messages.each do |message| %>
+          <li class="flash__error-item text-small text-grayscale-100"><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+  <div class="space-y-4 mb-6">
+    <div class="form-control">
+      <%= render partial: 'shared/form/label', locals: { for_name: "name", placeholder: "Company Name" } %>
+      <%= f.text_field :name, class: "input-field", placeholder: "Enter your company name" %>
+    </div>
+  </div>
+  <%= f.submit "SAVE", class: "btn btn-primary" %>
+<% end %>
+</br>
+<%= link_to "<- Back to Listing Page", admin_companies_path %>

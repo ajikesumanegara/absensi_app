@@ -1,56 +1,40 @@
-<% if @attendance.errors.any? %>
-  <div class="flash flash-danger absolute top-4 left-1/2 -translate-x-1/2 flex items-center gap-4 mx-auto">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-6 text-danger-300 shrink-0">
-      <path fill-rule="evenodd" d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-8-5a.75.75 0 0 1 .75.75v4.5a.75.75 0 0 1-1.5 0v-4.5A.75.75 0 0 1 10 5Zm0 10a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" clip-rule="evenodd" />
-    </svg>
-    <p class="flash__instruction text-small text-grayscale-100">
-      <% @attendance.errors.full_messages.each do |message| %>
-        <%= message %>
-      <% end %>
-    </p>
-  </div>
-<% end %>
-
-<div class="container h-screen flex flex-col justify-center p-4">
+<div class="w-full h-full flex flex-col">
   <% if @attendance.errors.any? %>
-    <div class="menu-bar flex">
-      <%= link_to edit_attendance_path, class: "menu-bar__previous-link btn-circle btn-outline mb-10" do %>
+    <div class="main-section__flash-container p-4 flex-none">
+      <div class="flash flash-danger w-full flex items-center gap-4 mx-auto">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-6 text-danger-300 shrink-0">
+          <path fill-rule="evenodd" d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-8-5a.75.75 0 0 1 .75.75v4.5a.75.75 0 0 1-1.5 0v-4.5A.75.75 0 0 1 10 5Zm0 10a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" clip-rule="evenodd" />
+        </svg>
+        <p class="flash__instruction text-grayscale-100">
+          <% @attendance.errors.full_messages.each do |message| %>
+            <%= message %>
+          <% end %>
+        </p>
+      </div>
+    </div>
+  <% end %>
+
+  <div class="main-content__container flex-1 w-full max-w-sm flex flex-col justify-center p-4 pb-10 mx-auto">
+    <% if @attendance.errors.any? %>
+      <%= link_to edit_attendance_path, class: "main-content__return-btn w-fit btn-circle btn-outline mb-10" do %>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
           <path fill-rule="evenodd" d="M11.03 3.97a.75.75 0 0 1 0 1.06l-6.22 6.22H21a.75.75 0 0 1 0 1.5H4.81l6.22 6.22a.75.75 0 1 1-1.06 1.06l-7.5-7.5a.75.75 0 0 1 0-1.06l7.5-7.5a.75.75 0 0 1 1.06 0Z" clip-rule="evenodd" />
         </svg>  
       <% end %>
-    </div>
-    <div class="main-content max-w-xs md:max-w-sm mx-auto mb-20">
-      <h4 class="main-content__heading heading-4 text-grayscale-100">Leave Early Permission Form</h4>
+      <h3 class="main-content__heading heading-3 text-grayscale-100 mb-2">Leave Early Permission Form</h3>
       <p class="main-content__subheading text-body text-grayscale-100 mb-4">Please fill in this form to send the permission.</p>
       <%= form_with model: @attendance do |f| %>
         <div class="form-control mb-4">
           <%= render partial: 'shared/form/label', locals: { for_name: "details", placeholder: "Reason" } %>
-          <%= f.text_area :details, class: "textarea", placeholder: "Type your reason here", rows: 3 %>
+          <%= f.text_area :details, class: "textarea", placeholder: "Type your reason here", rows: 3, required: "true" %>
         </div>
         <%= f.submit "SUBMIT", class: "btn btn-primary" %>
       <% end %>
-    </div>
-  <% else %>
-    <div class="menu-bar w-full flex justify-between items-center mb-10">
-      <div class="menu-bar w-full flex justify-between mb-10">
-        <%= link_to attendances_path, class: "menu-bar__attendance-history btn-circle btn-outline" do %>
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-          </svg>
-        <% end %>
-        <%= link_to user_session_path(current_user), data: { turbo_method: :delete, turbo_confirm: 'Are you sure to sign out?' }, class: "menu-bar__attendance-history btn-circle btn-outline hover:bg-danger-300 hover:border-danger-300 hover:text-grayscale-100", title: "Sign Out" do %>
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
-            <path fill-rule="evenodd" d="M5.47 5.47a.75.75 0 0 1 1.06 0L12 10.94l5.47-5.47a.75.75 0 1 1 1.06 1.06L13.06 12l5.47 5.47a.75.75 0 1 1-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 0 1-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
-          </svg>        
-        <% end %>
-      </div>
-    </div>
-    <div class="main-content flex flex-col justify-center items-center">
+    <% else %>
       <%= render 'shared/liveclock' %>
-      <%= form_with model: @attendance do |f| %>
-        <%= f.submit "CLOCK OUT", class: "btn btn-danger mt-6 mb-11" %>
+      <%= form_with model: @attendance, class: "main-content__form-container flex justify-center" do |f| %>
+        <%= f.submit "CLOCK OUT", class: "btn btn-danger mt-4" %>
       <% end %>
-    </div>
-  <% end %>
+    <% end %>
+  </div>
 </div>

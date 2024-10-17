@@ -12,26 +12,26 @@
 
   <body>
     <div class="w-full h-screen flex">
-      <aside class="sidebar w-80 flex flex-col bg-grayscale-400">
+      <aside class="sidebar w-80 flex flex-col bg-white drop-shadow-xl">
         <div class="sidebar__header p-4">
-          <%= link_to "Absensi App", admin_dashboard_path, class: "sidebar__dashboard-link text-3xl text-bold text-white" %>
+          <%= link_to "Absensi App", admin_dashboard_path, class: "sidebar__dashboard-link text-3xl text-bold" %>
         </div>
-        <ul class="sidebar__menu flex-1 p-4 space-y-1 border-t border-grayscale-300">
+        <ul class="sidebar__menu flex-1 p-4 space-y-1 border-t border-grayscale-100">
           <li class="sidebar__nav-item">
             <%= render partial: 'shared/sidebar/nav-link', locals: { path: admin_dashboard_path, icon: 'home', label: 'Dashboard', active: current_page?(admin_dashboard_path) } %>
           </li>
           <li class="sidebar__nav-item">
-            <%= render partial: 'shared/sidebar/nav-link', locals: { path: admin_users_path, icon: 'users', label: 'Users', active: current_page?(admin_users_path) } %>
+            <%= render partial: 'shared/sidebar/nav-link', locals: { path: admin_companies_path, icon: 'building', label: 'Companies', active: current_page?(admin_companies_path) } %>
           </li>
           <li class="sidebar__nav-item">
-            <%= render partial: 'shared/sidebar/nav-link', locals: { path: admin_companies_path, icon: 'building', label: 'Companies', active: current_page?(admin_companies_path) } %>
+            <%= render partial: 'shared/sidebar/nav-link', locals: { path: admin_users_path, icon: 'users', label: 'Users', active: current_page?(admin_users_path) } %>
           </li>
           <li class="sidebar__nav-item">
             <%= render partial: 'shared/sidebar/nav-link', locals: { path: admin_attendances_path, icon: 'calendar', label: 'Attendances', active: current_page?(admin_attendances_path) } %>
           </li>
         </ul>
         <div class="sidebar__footer p-4">
-          <%= link_to user_session_path(current_user), data: { turbo_method: :delete, turbo_confirm: 'Are you sure to sign out?' }, class: "w-full p-4 pr-10 flex justify-center items-center gap-1 bg-danger-300 text-white rounded-lg hover:bg-danger-400" do %>
+          <%= link_to user_session_path(current_user), data: { turbo_method: :delete, turbo_confirm: 'Are you sure to sign out?' }, class: "w-full p-4 pr-10 flex justify-center items-center gap-2 bg-danger-300 text-grayscale-100 rounded-lg hover:bg-danger-400" do %>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-6">
               <path fill-rule="evenodd" d="M17 4.25A2.25 2.25 0 0 0 14.75 2h-5.5A2.25 2.25 0 0 0 7 4.25v2a.75.75 0 0 0 1.5 0v-2a.75.75 0 0 1 .75-.75h5.5a.75.75 0 0 1 .75.75v11.5a.75.75 0 0 1-.75.75h-5.5a.75.75 0 0 1-.75-.75v-2a.75.75 0 0 0-1.5 0v2A2.25 2.25 0 0 0 9.25 18h5.5A2.25 2.25 0 0 0 17 15.75V4.25Z" clip-rule="evenodd" />
               <path fill-rule="evenodd" d="M14 10a.75.75 0 0 0-.75-.75H3.704l1.048-.943a.75.75 0 1 0-1.004-1.114l-2.5 2.25a.75.75 0 0 0 0 1.114l2.5 2.25a.75.75 0 1 0 1.004-1.114l-1.048-.943h9.546A.75.75 0 0 0 14 10Z" clip-rule="evenodd" />

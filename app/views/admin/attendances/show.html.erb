@@ -1,0 +1,22 @@
+<h3 class="heading-3">Detail Attendance:</h3>
+
+<% if @attendance.selfie.attached? %>
+  <%= image_tag url_for(@attendance.selfie), class: 'w-full max-w-md aspect-[3/4] rounded-lg object-cover' %>
+<% end %>
+
+<p class="text-body">
+  Name: <%= @attendance.user.full_name %>
+</p>
+<p class="text-body">
+  Status: <%= @attendance.status %>
+</p>
+<p class="text-body">
+  Details: <%= @attendance.details %>
+</p>
+<% if @attendance.selfie.attached? %>
+  <div class="flex items-center gap-4 text-body">
+    Location: <%= @attendance.latitude %>, <%= @attendance.longitude %> <a href="https://www.google.com/maps/search/?api=1&query=<%= @attendance.latitude %>,<%= @attendance.longitude %>" class="w-max btn btn-outline" target="_blank">Open Map</a>
+  </div>
+<% end %>
+
+<%= link_to "<- Back to Attendances listing", admin_attendances_path, class: "text-body underline" %>
