@@ -27,6 +27,10 @@ class User < ApplicationRecord
   def self.ransackable_attributes(auth_object = nil)
     ["as_admin", "as_owner", "company_id", "created_at", "email", "full_name", "id", "invite_token", "invite_token_expired_at", "password_confirmation", "password_digest", "reset_password_token", "reset_password_token_expired_at", "updated_at", "username"]
   end
+  
+  def self.ransackable_associations(auth_object = nil)
+    ["attendances", "company"]
+  end
 
   def companies_attributes=(companies_attributes)
     companies_attributes.each do |i, company_attributes|

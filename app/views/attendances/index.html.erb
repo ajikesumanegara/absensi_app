@@ -1,65 +1,180 @@
-<div class="text-grayscale-100">
-  <h1>Attendances History</h1>
-  </br>
-  <h4>Filter by:</h4>
-  <%= search_form_for @q, html: { class: "flex gap-2" } do |f| %>
-    <%= f.collection_select :user_id_eq, @employees, :id, :full_name, { include_blank: "Select Employee" }, { class: "text-black" } %>
-  
-    <select id="timeSelect" name="time_select" class="text-black">
-      <option value="default" <%= 'selected' if params[:time_select] == 'default' %>>All Time</option>
-      <option value="today" <%= 'selected' if params[:time_select] == 'today' %>>Today</option>
-      <option value="yesterday" <%= 'selected' if params[:time_select] == 'yesterday' %>>Yesterday</option>
-      <option value="last7days" <%= 'selected' if params[:time_select] == 'last7days' %>>Last Week</option>
-      <option value="last30days" <%= 'selected' if params[:time_select] == 'last30days' %>>Last Month</option>
-      <option value="custom" <%= 'selected' if params[:time_select] == 'custom' %>>Custom Range</option>
-    </select>
+<div class="main-content__container w-full h-full p-4 xl:pr-8">
+  <div class="main-content__header w-full flex justify-between items-center gap-4 py-4 mb-2 after:content-[''] after:w-[38px]">
+    <button class="main-content__sidebar-trigger btn-circle btn-outline xl:hidden" onclick="toggleSidebar()" role="button">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-5">
+        <path fill-rule="evenodd" d="M3 6.75A.75.75 0 0 1 3.75 6h16.5a.75.75 0 0 1 0 1.5H3.75A.75.75 0 0 1 3 6.75ZM3 12a.75.75 0 0 1 .75-.75h16.5a.75.75 0 0 1 0 1.5H3.75A.75.75 0 0 1 3 12Zm0 5.25a.75.75 0 0 1 .75-.75h16.5a.75.75 0 0 1 0 1.5H3.75a.75.75 0 0 1-.75-.75Z" clip-rule="evenodd" />
+      </svg>        
+    </button>
+    <h3 class="main-content__heading heading-3 text-grayscale-100 text-center">Attendances History</h3>
+  </div>
+  <div class="main-content__body p-4 bg-grayscale-400/75 border-2 border-grayscale-300/50 rounded-lg">
+    <div class="main-content__filter-container mb-0 md:mb-4">
+      <%= search_form_for @q, url: attendances_path, html: { class: "main-content__filter-form flex justify-between xl:justify-start items-center gap-3" } do |f| %>
+        <div id="filterParams" class="fixed xl:static left-0 top-0 z-10 w-full xl:w-auto h-svh xl:h-auto p-4 xl:p-0 flex flex-col xl:flex-row justify-center xl:justify-start items-center gap-3 bg-grayscale-400 xl:bg-transparent translate-y-[150%] xl:translate-y-0 transition-transform duration-500">
+          <h4 class="heading-4 xl:hidden">Filter</h4>
 
-    <%= f.date_field :clock_in_gteq, class: "text-black", type: "hidden" %>
-    <%= f.date_field :clock_in_lteq, class: "text-black", type: "hidden" %>
+          <%= f.collection_select :user_id_eq, @employees, :id, :full_name, { include_blank: "All Users" }, { class: "select w-full max-w-xs xl:w-fit text-base capitalize" } %>
+      
+          <select id="timeSelect" name="time_select" class="select w-full max-w-xs xl:w-fit text-base capitalize">
+            <option value="default" <%= 'selected' if params[:time_select] == 'default' %>>All Time</option>
+            <option value="today" <%= 'selected' if params[:time_select] == 'today' %>>Today</option>
+            <option value="yesterday" <%= 'selected' if params[:time_select] == 'yesterday' %>>Yesterday</option>
+            <option value="last7days" <%= 'selected' if params[:time_select] == 'last7days' %>>Last Week</option>
+            <option value="last30days" <%= 'selected' if params[:time_select] == 'last30days' %>>Last Month</option>
+            <option value="custom" <%= 'selected' if params[:time_select] == 'custom' %>>Custom Range</option>
+          </select>
+      
+          <%= f.date_field :clock_in_gteq, class: "select w-full max-w-xs xl:w-fit text-base", type: "hidden" %>
+          <%= f.date_field :clock_in_lteq, class: "select w-full max-w-xs xl:w-fit text-base", type: "hidden" %>
+      
+          <%= select_tag "q[status_eq]", options_for_select([['All Status', '']] + Attendance.statuses.map { |k, v| [k.humanize, v] }), { class: "select w-full max-w-xs xl:w-fit text-base capitalize" } %>
 
-
-    <%= select_tag "q[status_eq]", options_for_select([['All Status', '']] + Attendance.statuses.map { |k, v| [k.humanize, v] }), { class: "text-black" } %>
-
-    <%= link_to "Reset", attendances_path, class: "btn btn-outline" %>
-    <%= f.submit id: "searchBtn", class: "btn btn-primary" %>
-    <%= link_to "Download", attendances_path(format: :pdf, q: @search_params.present? ? @search_params : {}), class: "w-fit btn btn-primary", target: "_blank" %>
-  <% end %>
-  </br>
-  <table class="w-full">
-    <thead>
-      <tr>
-        <th class="text-left px-2">User</th>
-        <th><%= sort_link(@q, :clock_in, "Clock In") %></th>
-        <th class="text-left px-2">Clock Out</th>
-        <th class="text-left px-2">Status</th>
-        <th class="text-left px-2">Details</th>
-        <th class="text-left px-2" colspan="2">Action</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% if @attendances.any? %>
-        <% @attendances.each do |attendance| %>
-          <tr>
-            <td class="px-2"><%= attendance.user.full_name %></td>
-            <td class="px-2"><%= attendance.clock_in.strftime("%a, %d %b %Y - %H:%M WIB") %></td>
-            <td class="px-2"><%= attendance.clock_out %></td>
-            <td class="px-2"><%= attendance.status %></td>
-            <td class="px-2"><%= attendance.details %></td>
-            <td class="px-2"><%= link_to "View", attendance_path(attendance), class: "text-primary-300" %></td>
-            <td class="px-2"><%= link_to "Download", attendance_path(attendance, format: :pdf), class: "text-primary-300" %></td>
+          <%= button_tag type: 'submit', class: "w-full xl:w-fit max-w-xs btn xl:btn-small btn-primary" do %>
+            <span>Search</span>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-5">
+              <path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11ZM2 9a7 7 0 1 1 12.452 4.391l3.328 3.329a.75.75 0 1 1-1.06 1.06l-3.329-3.328A7 7 0 0 1 2 9Z" clip-rule="evenodd" />
+            </svg>
+          <% end %>
+          <div id="filterCollapse" class="xl:hidden" onclick=toggleFilter()>Cancel</div>
+        </div>
+        <div id="filterTrigger" class="xl:hidden btn-small btn-outline pr-5" onclick=toggleFilter()>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-5">
+            <path d="M17 2.75a.75.75 0 0 0-1.5 0v5.5a.75.75 0 0 0 1.5 0v-5.5ZM17 15.75a.75.75 0 0 0-1.5 0v1.5a.75.75 0 0 0 1.5 0v-1.5ZM3.75 15a.75.75 0 0 1 .75.75v1.5a.75.75 0 0 1-1.5 0v-1.5a.75.75 0 0 1 .75-.75ZM4.5 2.75a.75.75 0 0 0-1.5 0v5.5a.75.75 0 0 0 1.5 0v-5.5ZM10 11a.75.75 0 0 1 .75.75v5.5a.75.75 0 0 1-1.5 0v-5.5A.75.75 0 0 1 10 11ZM10.75 2.75a.75.75 0 0 0-1.5 0v1.5a.75.75 0 0 0 1.5 0v-1.5ZM10 6a2 2 0 1 0 0 4 2 2 0 0 0 0-4ZM3.75 10a2 2 0 1 0 0 4 2 2 0 0 0 0-4ZM16.25 10a2 2 0 1 0 0 4 2 2 0 0 0 0-4Z" />
+          </svg>          
+          <span>Filter</span>          
+        </div>
+        <%= link_to attendances_path, class: "btn-circle md:btn-small btn-outline" do %>
+          <span class="hidden md:inline">Reset</span>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="md:hidden size-5">
+            <path d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z" />
+          </svg>          
+        <% end %>
+        <div class="flex-1 flex justify-end">
+          <%= link_to attendances_path(format: :pdf, q: @search_params.present? ? @search_params : {}), class: "w-fit btn-small btn-primary pr-5", target: "_blank" do %>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-5">
+              <path d="M10.75 2.75a.75.75 0 0 0-1.5 0v8.614L6.295 8.235a.75.75 0 1 0-1.09 1.03l4.25 4.5a.75.75 0 0 0 1.09 0l4.25-4.5a.75.75 0 0 0-1.09-1.03l-2.955 3.129V2.75Z" />
+              <path d="M3.5 12.75a.75.75 0 0 0-1.5 0v2.5A2.75 2.75 0 0 0 4.75 18h10.5A2.75 2.75 0 0 0 18 15.25v-2.5a.75.75 0 0 0-1.5 0v2.5c0 .69-.56 1.25-1.25 1.25H4.75c-.69 0-1.25-.56-1.25-1.25v-2.5Z" />
+            </svg>          
+            <span>Download</span>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+    <table class="main-content__table table mb-2 md:mb-4">
+      <thead>
+        <tr class="collapse md:visible">
+          <th class="w-full md:w-2/4 xl:w-1/4">User</th>
+          <th class="md:hidden xl:table-cell w-min xl:w-1/4">Clock In</th>
+          <th class="md:hidden xl:table-cell w-min xl:w-1/4">Clock Out</th>
+          <th class="hidden md:table-cell xl:hidden w-min md:1/4">Working Time</th>
+          <th class="w-min md:w-1/4">Status</th>
+          <th class="w-min">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if @attendances.any? %>
+          <% @attendances.each do |attendance| %>
+            <tr>
+              <!-- For Mobile View -->
+              <td colspan="5" class="md:hidden">
+                <div class="table__item-card">
+                  <p class="capitalize">
+                    <%= attendance.user.full_name %>
+                  </p>
+                  <p class="text-small opacity-50 mt-2">In</p>
+                  <p>
+                    <%= attendance.clock_in.strftime("%a, %d %b %Y - %H:%M:%S WIB") %>
+                  </p>
+                  <p class="text-small opacity-50 mt-2">Out</p>
+                  <p>
+                    <%= attendance.clock_out.strftime("%a, %d %b %Y - %H:%M:%S WIB") %>
+                  </p>
+                  <p class="text-small opacity-50 mt-2">Status</p>
+                  <p class="capitalize mb-4">
+                    <%= attendance.status.gsub('_', ' ') %>
+                  </p>
+                  <hr class="opacity-25">
+                  <div class="flex flex-wrap gap-4 mt-4">
+                    <%= link_to attendance_path(attendance), class: "flex items-center gap-1.5 text-grayscale-100/50 hover:text-grayscale-100", title: "View" do %>
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                      </svg>
+                      <span>Show</span>   
+                    <% end %>
+                    <%= link_to attendance_path(attendance, format: :pdf), class: "flex items-center gap-1.5 text-grayscale-100/50 hover:text-grayscale-100 hover:text-grayscale-100", title: "Download", target: "_blank" do %>
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                      </svg>
+                      <span>Download</span>             
+                    <% end %>
+                    <%= link_to attendance_path(attendance), data: { turbo_method: :delete, turbo_confirm: 'Are you sure to delete this attendance?' }, class: "flex items-center gap-1.5 text-danger-300 hover:text-danger-400", title: "Delete" do %>
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                      </svg>
+                      <span>Delete</span>     
+                    <% end %>
+                  </div>
+                </div>
+              </td>
+              <!-- For Tablet & Desktop View -->
+              <td class="hidden md:table-cell">
+                <p class="capitalize"><%= attendance.user.full_name %></p>
+              </td>
+              <td class="hidden md:table-cell xl:hidden whitespace-nowrap">
+                <p class="text-small opacity-50">In:</p>
+                  <%= attendance.clock_in.strftime("%a, %d %b %Y - %H:%M:%S WIB") %>
+                <p class="text-small opacity-50 mt-2">Out:</p>
+                <% if attendance.clock_out %>
+                  <%= attendance.clock_out.strftime("%a, %d %b %Y - %H:%M:%S WIB") %>
+                <% end %>
+              </td>
+              <td class="hidden xl:table-cell whitespace-nowrap">
+                <%= attendance.clock_in.strftime("%a, %d %b %Y - %H:%M:%S WIB") %>
+              </td>
+              <td class="hidden xl:table-cell whitespace-nowrap">
+                <% if attendance.clock_out %>
+                  <%= attendance.clock_out.strftime("%a, %d %b %Y - %H:%M:%S WIB") %>
+                <% end %>
+              </td>
+              <td class="hidden md:table-cell whitespace-nowrap">
+                <% if attendance.status %>
+                  <p class="capitalize"><%= attendance.status.gsub('_', ' ') %></p>
+                <% end %>
+              </td>
+              <td class="hidden md:table-cell">
+                <div class="flex justify-end gap-4 pr-2">
+                  <%= link_to attendance_path(attendance), class: "text-grayscale-100/50 hover:text-grayscale-100", title: "View" do %>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                    </svg>                  
+                  <% end %>
+                  <%= link_to attendance_path(attendance, format: :pdf), class: "text-grayscale-100/50 hover:text-grayscale-100", title: "Download", target: "_blank" do %>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                    </svg>                  
+                  <% end %>
+                  <%= link_to attendance_path(attendance), data: { turbo_method: :delete, turbo_confirm: 'Are you sure to delete this attendance?' }, class: "text-grayscale-100/50 hover:text-danger-300", title: "Delete" do %>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                    </svg>                  
+                  <% end %>
+                </div>
+              </td>
+            </tr>
+          <% end %>
+        <% else %>
+          <tr class="table__row--inactive">
+            <td colspan="5">No data found.</td>
           </tr>
         <% end %>
-      <% else %>
-        <tr>
-          <td colspan="6" class="text-center">No data found.</td>
-        </tr>
-      <% end %>
-    </tbody>
-  </table>
-  </br>
-  <%== pagy_nav(@pagy) %>
-  </br>
-  <%= link_to "<- Back to Home", root_path %>
+      </tbody>
+    </table>
+    <div class="main-content__pagination w-full flex justify-center">
+      <%= render partial: 'shared/pagination' %>
+    </div>
+  </div>
 </div>
 
 <!-- CHECKING SELECT "TIME" TYPE -->
@@ -75,7 +190,6 @@
     }
   });
 </script>
-
 <!-- UPDATE DATE FIELD VALUE -->
 <script>
   document.getElementById('timeSelect').addEventListener('change', function() {
@@ -121,4 +235,13 @@
         break;
     }
   });
+</script>
+<!-- SHOW/ HIDE FILTER -->
+<script>
+  function toggleFilter() {
+    const filterParams = document.getElementById("filterParams");
+
+    filterParams.classList.toggle('translate-y-[150%]');
+    filterParams.classList.toggle('translate-y-0');
+  }
 </script>

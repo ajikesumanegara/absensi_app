@@ -24,7 +24,21 @@ class AttendancesController < ApplicationController
   end
 
   def new
-    @attendance = Attendance.new
+    if current_user
+      @today_attendances = current_user.attendances.where(clock_in: Date.today.beginning_of_day..Date.today.end_of_day)
+
+      if @today_attendances.present?
+        if @today_attendances.first.status.blank?
+          redirect_to edit_attendance_path(@today_attendances.first)
+        else
+          @attendance = Attendance.new
+        end
+      else
+      @attendance = Attendance.new 
+      end
+    else
+      @attendance = Attendance.new 
+    end
   end
 
   def new_permission
@@ -68,7 +82,7 @@ class AttendancesController < ApplicationController
     respond_to do |format|
       format.html
       format.pdf do
-        render pdf: "Detail Attendance Report", template: "attendances/pdf_template/details_attendance", formats: [:html], disposition: 'attachment'
+        render pdf: "Detail Attendance Report", template: "attendances/pdf_template/details_attendance", formats: [:html]
       end
     end
 
@@ -117,6 +131,14 @@ class AttendancesController < ApplicationController
         render :edit, status: :unprocessable_entity
       end
     end
+  end
+
+  def destroy
+    @attendance = Attendance.find(params[:id])
+
+    @attendance.destroy
+    
+    redirect_to attendances_path
   end
 
   private

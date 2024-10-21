@@ -10,11 +10,11 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body class="w-full h-svh md:h-screen flex bg-grayscale-500 text-grayscale-100">
+  <body class="w-full h-screen flex bg-grayscale-500 text-grayscale-100">
     <% if current_user %>
       <%= render 'shared/sidebar' %>
     <% end %>
-    <main class="w-full h-full flex flex-col">
+    <main class="w-full h-full flex flex-col overflow-auto">
       <% flash.each do |type, msg| %>
         <div class="main-section__flash-container p-4 flex-none">
           <div id="flash" class="flash flash-<%= type %> w-full flex items-center gap-4 mx-auto">

@@ -1,22 +1,60 @@
-<h3 class="heading-3 text-grayscale-100">Detail Attendance:</h3>
-
-<% if @attendance.selfie.attached? %>
-  <%= image_tag url_for(@attendance.selfie), class: 'w-full max-w-md aspect-[3/4] rounded-lg object-cover' %>
-<% end %>
-
-<p class="text-body text-grayscale-100">
-  Name: <%= @attendance.user.full_name %>
-</p>
-<p class="text-body text-grayscale-100">
-  Status: <%= @attendance.status %>
-</p>
-<p class="text-body text-grayscale-100">
-  Details: <%= @attendance.details %>
-</p>
-<% if @attendance.selfie.attached? %>
-  <div class="flex items-center gap-4 text-body text-grayscale-100">
-    Location: <%= @attendance.latitude %>, <%= @attendance.longitude %> <a href="https://www.google.com/maps/search/?api=1&query=<%= @attendance.latitude %>,<%= @attendance.longitude %>" class="w-max btn btn-outline" target="_blank">Open Map</a>
-  </div>
-<% end %>
-
-<%= link_to "<- Back to Attendances listing", attendances_path, class: "text-body text-grayscale-100 underline" %>
+<div class="main-content__container w-full max-w-sm flex flex-col justify-center p-4 pb-20 mx-auto">
+  <%= link_to :back, class: "main-content__return-btn w-fit btn-circle btn-outline mb-10" do %>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
+      <path fill-rule="evenodd" d="M11.03 3.97a.75.75 0 0 1 0 1.06l-6.22 6.22H21a.75.75 0 0 1 0 1.5H4.81l6.22 6.22a.75.75 0 1 1-1.06 1.06l-7.5-7.5a.75.75 0 0 1 0-1.06l7.5-7.5a.75.75 0 0 1 1.06 0Z" clip-rule="evenodd" />
+    </svg>  
+  <% end %>
+  <h3 class="main-content__heading heading-3 capitalize text-grayscale-100 mb-4">
+    Detail Attendance
+  </h3>
+  <% if @attendance.selfie.attached? %>
+    <%= image_tag url_for(@attendance.selfie), class: 'w-full max-w-md aspect-[3/4] rounded-lg object-cover' %>
+  <% end %>
+  <ul class="main-content__detail-information my-4">
+    <li class="py-4 flex justify-between items-center border-b border-grayscale-100/10">
+      <span class="text-body text-grayscale-100/50">
+        Name
+      </span>
+      <span class="text-bold capitalize">
+        <%= @attendance.user.full_name %>
+      </span>
+    </li>
+    <li class="py-4 flex justify-between items-center border-b border-grayscale-100/10">
+      <span class="text-body text-grayscale-100/50">
+        Status
+      </span>
+      <span class="text-bold capitalize">
+        <%= @attendance.status.gsub('_', ' ') %>
+      </span>
+    </li>
+    <li class="py-4 flex flex-col border-b border-grayscale-100/10">
+      <span class="text-body text-grayscale-100/50">
+        Details
+      </span>
+      <p class="text-bold capitalize">
+        <%= @attendance.details %>
+      </p>
+    </li>
+    <% if @attendance.selfie.attached? %>
+      <li class="py-4 flex justify-between items-center gap-4 border-b border-grayscale-100/10">
+        <div class="flex flex-col">
+          <span class="text-body text-grayscale-100/50">
+            Location
+          </span>
+          <p class="text-bold capitalize">
+            <%= @attendance.latitude %>,</br><%= @attendance.longitude %>
+          </p>
+        </div>
+        <a href="https://www.google.com/maps/search/?api=1&query=<%= @attendance.latitude %>,<%= @attendance.longitude %>" class="btn-small btn-outline" target="_blank">Open Map</a>
+      </li>
+    <% end %>
+    <li class="py-4">
+      <%= link_to attendance_path(@attendance, format: :pdf), class: "btn btn-primary", title: "Download", target: "_blank" do %>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+        </svg>
+        <span>Download</span>             
+      <% end %>
+    </li>
+  </ul>
+</div>

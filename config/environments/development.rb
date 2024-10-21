@@ -69,7 +69,7 @@ Rails.application.configure do
   # config.action_cable.disable_request_forgery_protection = true
 
   # Setup ngrok for real-time preview
-  config.hosts << "ccf9-180-244-138-102.ngrok-free.app"
+  config.hosts << "50e7-180-244-138-102.ngrok-free.app"
 
   config.action_mailer.delivery_method = :smtp
 end

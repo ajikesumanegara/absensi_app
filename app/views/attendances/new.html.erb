@@ -1,4 +1,4 @@
-<div class="main-content__container flex-1 flex flex-col justify-center items-center p-4">
+<div class="main-content__container flex-1 flex flex-col justify-center items-center p-4 pb-24 md:pb-4">
   <% if current_user %>
     <div class="main-content__menu-bar w-full max-w-xl flex justify-end mb-10 xl:hidden">
       <button class="main-content__sidebar-trigger btn-circle btn-outline" onclick="toggleSidebar()" role="button">
@@ -13,7 +13,7 @@
   <%= render 'shared/liveclock' %>
   <% if current_user %>
     <!-- DEFAULT -->
-     <% if current_user.attendances.where(clock_in: Date.today.beginning_of_day..Date.today.end_of_day).blank? %>
+     <% if @today_attendances.blank? %>
       <div class="homepage__cta-group mt-4">
         <button id="btn-start-selfie" class="btn btn-primary mb-4">CLOCK IN</button>
         <%= link_to "I can't work today", new_permission_attendances_path, id: "link-create-permission", class: "text-body text-grayscale-100/75 hover:text-grayscale-100" %>

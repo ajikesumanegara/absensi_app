@@ -20,7 +20,7 @@
   }
 
   .heading-3 {
-    @apply text-3xl md:text-4xl font-semibold leading-none;
+    @apply text-2xl md:text-4xl font-semibold leading-none;
   }
 
   .heading-4 {
@@ -67,7 +67,7 @@
     @apply space-y-2;
   }
 
-  .input-field, .password-field, .textarea {
+  .input-field, .password-field, .textarea, .select {
     @apply w-full bg-grayscale-400 border border-grayscale-300 text-lg text-grayscale-100 rounded-lg focus:border-2 focus:border-primary-300 focus:ring-4 focus:ring-primary-300/20 placeholder:text-grayscale-200;
   }
 
